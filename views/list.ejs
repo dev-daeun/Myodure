@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Modern Business - Start Bootstrap Template</title>
+    <title>새 가족 찾기</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -29,46 +29,31 @@
       <!-- Page Heading/Breadcrumbs -->
       <hr>
 
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="index.html">Home</a>
-        </li>
-        <li class="breadcrumb-item active">Portfolio 1</li>
-      </ol>
-
-
+      <a href="/post/registration" style="text-align:right">
+        <button style="text-align: right;" class="btn btn-danger">분양글 등록하기</button>
+      </a>  
       <hr>
 
       <!-- list -->
       <% for(let i = 0; i<posts.length; i++) { %>
         <div class="row">
           <div class="col-md-7">
-            <a href="#">
-              <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/700x300" alt="">
-            </a>
-          </div>
-          <div class="col-md-5">
-            <h3>Project Two</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, odit velit cumque vero doloremque repellendus distinctio maiores rem expedita a nam vitae modi quidem similique ducimus! Velit, esse totam tempore.</p>
-            <a class="btn btn-primary" href="#">View Project
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </a>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-7">
-            <a href="#">
+            <a href="/post/<%=posts[i].id%>">
               <img class="img-fluid rounded mb-3 mb-md-0" src="<%=posts[i].thumbnail%>" alt="">
             </a>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-5" style="margin-top: 50px;">
             <h3><%=posts[i].title%></h3>
-            <p><%=posts[i].introduction%></p>
-            <a class="btn btn-primary" href="#">View Project
+            <p class="lead"><%=posts[i].introduction%><h6><%=posts[i].created_at%></h6></p> 
+            <a class="btn btn-warning" value="<%=posts[i].id%>" href="/post/<%=posts[i].id%>">자세히 보기
               <span class="glyphicon glyphicon-chevron-right"></span>
             </a>
+            <button class="favor btn" value="<%=posts[i].favorId%>"> 
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
           </div>
         </div>
+        <hr>
         <% } %>
       <!-- /.row -->
 
@@ -104,18 +89,81 @@
     <!-- /.container -->
 
     <!-- Footer -->
-    <footer class="py-5 bg-dark">
-      <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
-      </div>
-      <!-- /.container -->
+    <footer class="py-5 bg-warm">
+        <div class="container">
+          <p class="m-0 text-center text-black">성신여자대학교 컴퓨터소프트웨어 전공 13학번 김다은 졸업작품</p>
+        </div>
+        <!-- /.container -->
     </footer>
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/popper/popper.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
+    <script>
+      //TODO : 로그인 중인 사용자 아이디랑 작성자 아이디 동일하면 내가 찜한 냥 버튼 없어야
+      $(() => {
+        var favors = document.getElementsByClassName('favor');
+        for(let element of favors){
+          if(element.value==0){        
+            element.className += " btn-default";
+            let text = document.createTextNode("내가 찜한 냥에 추가");
+            element.appendChild(text);
+          }
+          else {
+            element.className += " btn-danger"; 
+            let text = document.createTextNode("내가 찜한 냥");
+            element.appendChild(text);
+          }
+        }
+ 
+        $("body").on("click", ".favor", (ent) => {
+          if(parseInt($(ent.target).val())===0){
+            $.ajax({
+              processData: false,
+              type: "POST",
+              dataType: "json",
+              contentType: "application/json",
+              url: '/favor',
+              data: JSON.stringify({
+                postId: $(ent.target).siblings('a').attr('value')
+              }),
+              success: function(data){
+                $(ent.target).removeClass('btn-default');
+                $(ent.target).addClass('btn-danger');
+                $(ent.target).text("내가 찜한 냥");
+                $(ent.target).val(data);
+              },
+              error: function(xhr, status, err){
+                alert(xhr.responseText);
+              }
+            });
+          }
+          else{
+            $.ajax({
+              processData: false,
+              type: "DELETE",
+              dataType: "json",
+              contentType: "application/json",
+              url: '/favor',
+              data: JSON.stringify({
+                favorId: $(ent.target).val(),
+                postId: $(ent.target).siblings('a').attr('value')
+              }),
+              success: function(data){
+                $(ent.target).removeClass('btn-danger');
+                $(ent.target).addClass('btn-default');
+                $(ent.target).text("내가 찜한 냥에 추가");
+                $(ent.target).val(null);
+              },
+              error: function(xhr, status, err){
+                alert(xhr.responseText);
+              }
+            });
+          }
+        });
+      });
+    </script>
   </body>
 
 </html>

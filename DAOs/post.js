@@ -28,5 +28,27 @@ module.exports = {
         }finally{
             await pool.releaseConnection(conn);
         }
+    },
+    selectById: async function(id){
+        try{
+            var conn = await pool.getConnection();
+            let results = await conn.query(
+                `
+                SELECT * 
+                FROM   (SELECT posts.*, 
+                               users.username 
+                        FROM   posts 
+                               JOIN users 
+                                 ON users.id = posts.user_id 
+                                    AND posts.id = ?)AS POSTS 
+                       JOIN post_images 
+                         ON post_images.post_id = POSTS.id 
+                `, [id]);
+            return results;
+        }catch(err){
+            throw err;
+        }finally{
+            await pool.releaseConnection(conn);
+        }
     }
 };

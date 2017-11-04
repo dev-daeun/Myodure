@@ -3,6 +3,7 @@ const router = express.Router();
 const ejs = require('ejs');
 
 const UserDAO = require('../DAOs/user');
+const PostDAO = require('../DAOs/post');
 const UserService = require('../services/user');
 const Error = require('../libs/error');
 const Redis = require('../libs/redis');
@@ -13,6 +14,7 @@ const Auth = require('../libs/auth');
 router.get('/', async function(req, res, next) {
   try{
       let urgentList = await PostDAO.selectUrgent();
+      console.log(urgentList);
       ejs.renderFile('views/index.ejs', {urgent: urgentList}, (err, view) => {
           if(err) next(err);
           else res.status(200).send(view);
@@ -72,7 +74,7 @@ router.post('/login', async function(req, res, next){
 
 
 
-router.use(require('./auth'));
+// router.use(require('./auth'));
 
 
 

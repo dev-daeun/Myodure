@@ -8,13 +8,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Modern Business - Start Bootstrap Template</title>
+    <title>새 가족 찾기</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="css/modern-business.css" rel="stylesheet">
+    <link href="../css/modern-business.css" rel="stylesheet">
 
   </head>
 
@@ -24,187 +24,124 @@
     <% include ./navigation.ejs %>
 
     <!-- Page Content -->
-    <div class="container">
+    <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
 
       <!-- Page Heading/Breadcrumbs -->
-      <h1 class="mt-4 mb-3">Post Title
+      <h3 class="mt-4 mb-3"><%=post.title%>
         <small>by
-          <a href="#">Start Bootstrap</a>
+          <a href="#"><%=post.username%></a>
         </small>
-      </h1>
-
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="index.html">Home</a>
-        </li>
-        <li class="breadcrumb-item active">Blog Home 2</li>
-      </ol>
+      </h3>
 
       <div class="row">
-
         <!-- Post Content Column -->
-        <div class="col-lg-8">
-
+        <div class="col-lg-12">
           <!-- Preview Image -->
-          <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
-
+          <div class="row">
+                <% for(let i = 0; i<images.length; i++) { %>
+                    <div class="col-lg-6">
+                        <img class="img-fluid rounded"  src="<%=images[i]%>" alt="unloaded" style="margin-bottom: 10px;">
+                    </div>
+                  <% } %>  
+          </div>
           <hr>
-
-          <!-- Date/Time -->
-          <p>Posted on January 1, 2017 at 12:00 PM</p>
-
-          <hr>
-
-          <!-- Post Content -->
-          <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, tenetur natus doloremque laborum quos iste ipsum rerum obcaecati impedit odit illo dolorum ab tempora nihil dicta earum fugiat. Temporibus, voluptatibus.</p>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, doloribus, dolorem iusto blanditiis unde eius illum consequuntur neque dicta incidunt ullam ea hic porro optio ratione repellat perspiciatis. Enim, iure!</p>
-
-          <blockquote class="blockquote">
-            <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-            <footer class="blockquote-footer">Someone famous in
-              <cite title="Source Title">Source Title</cite>
-            </footer>
-          </blockquote>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, nostrum, aliquid, animi, ut quas placeat totam sunt tempora commodi nihil ullam alias modi dicta saepe minima ab quo voluptatem obcaecati?</p>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, dolor quis. Sunt, ut, explicabo, aliquam tenetur ratione tempore quidem voluptates cupiditate voluptas illo saepe quaerat numquam recusandae? Qui, necessitatibus, est!</p>
-
-          <hr>
-
-          <!-- Comments Form -->
-          <div class="card my-4">
-            <h5 class="card-header">Leave a Comment:</h5>
-            <div class="card-body">
-              <form>
-                <div class="form-group">
-                  <textarea class="form-control" rows="3"></textarea>
+             <!-- Date/Time -->
+            <div class="row">
+                <div class="col-lg-2">
+                    <h5>등록일</h5> 
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
-          </div>
-
-          <!-- Single Comment -->
-          <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-            <div class="media-body">
-              <h5 class="mt-0">Commenter Name</h5>
-              Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-            </div>
-          </div>
-
-          <!-- Comment with nested comments -->
-          <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-            <div class="media-body">
-              <h5 class="mt-0">Commenter Name</h5>
-              Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-              <div class="media mt-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                  <h5 class="mt-0">Commenter Name</h5>
-                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                <div class="col-lg-10">
+                    <p class="lead"><%=post.created_at%></p>
                 </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2">
+                  <h5>기본 정보</h5>
               </div>
-
-              <div class="media mt-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                  <h5 class="mt-0">Commenter Name</h5>
-                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Sidebar Widgets Column -->
-        <div class="col-md-4">
-
-          <!-- Search Widget -->
-          <div class="card mb-4">
-            <h5 class="card-header">Search</h5>
-            <div class="card-body">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button">Go!</button>
-                </span>
+              <div class="col-lg-10">
+                  <p id="age" class="lead"><%=post.age%></p>
+                  <p class="lead"><%=post.gender%></p>
+                  <p class="lead"><%=post.spiece%></p>
+                  <p class="lead" id="neutralization"><%=post.neutralization%></p>
+                  <p class="lead" id="fee"><%=post.fee%></p>
+                  <p class="lead" >희망분양지역 : <%=post.region%></p>
               </div>
             </div>
-          </div>
-
-          <!-- Categories Widget -->
-          <div class="card my-4">
-            <h5 class="card-header">Categories</h5>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-6">
-                  <ul class="list-unstyled mb-0">
-                    <li>
-                      <a href="#">Web Design</a>
-                    </li>
-                    <li>
-                      <a href="#">HTML</a>
-                    </li>
-                    <li>
-                      <a href="#">Freebies</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-lg-6">
-                  <ul class="list-unstyled mb-0">
-                    <li>
-                      <a href="#">JavaScript</a>
-                    </li>
-                    <li>
-                      <a href="#">CSS</a>
-                    </li>
-                    <li>
-                      <a href="#">Tutorials</a>
-                    </li>
-                  </ul>
-                </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-2">
+                  <h5>예방 접종</h5>
+              </div>
+              <div class="col-lg-10">
+                  <span class="lead vaccin" value="<%=post.combi1%>" style="margin-right:10px;">종합1차</span>
+                  <span class="lead vaccin" value="<%=post.combi2%>" style="margin-right:10px;">종합2차</span>
+                  <span class="lead vaccin" value="<%=post.combi3%>" style="margin-right:10px;">종합3차</span>
+                  <span class="lead vaccin" value="<%=post.rabies%>">광견병</span>
               </div>
             </div>
-          </div>
-
-          <!-- Side Widget -->
-          <div class="card my-4">
-            <h5 class="card-header">Side Widget</h5>
-            <div class="card-body">
-              You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+            <hr>
+            <div class="row">
+              <div class="col-lg-2">
+                  <h5>소개</h5>
+              </div>
+              <div class="col-lg-10">
+                  <p><%=post.introduction%></p> 
+              </div>
             </div>
-          </div>
-
-        </div>
-
+            <hr>
+            <div class="row">
+                <div class="col-lg-2">
+                    <h5>입양 요구조건</h5>
+                </div>
+                <div class="col-lg-10">
+                    <p><%=post.condition%></p>
+                </div>
+              </div>
+        </div>  <!--col-->
+      </div> <!--row-->
+      <div style="float: right;">
+          <button id="chatButton" style="text-align: right;" class="btn btn-danger">분양희망자와 대화하기</button>
       </div>
-      <!-- /.row -->
+    </div><!--container-->  
 
-    </div>
-    <!-- /.container -->
+
 
     <!-- Footer -->
-    <footer class="py-5 bg-dark">
-      <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
-      </div>
-      <!-- /.container -->
+    <footer class="py-5 bg-warm">
+        <div class="container">
+          <p class="m-0 text-center text-black">성신여자대학교 컴퓨터소프트웨어 전공 13학번 김다은 졸업작품</p>
+        </div>
+        <!-- /.container -->
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper/popper.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/popper/popper.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      $(() => {
+          switch(parseInt($("#age").text())){
+            case 1: $("#age").text("2개월 이상 - 6개월 미만"); break;
+            case 2: $("#age").text("6개월 이상 - 1년 미만"); break;
+            case 3: $("#age").text("1년 이상 - 3년 미만"); break;
+            case 4: $("#age").text("3년 이상");
+          }
+          switch(parseInt($("#neutralization").text())){
+            case 0: $("#neutralization").text("중성화 O"); break;
+            case 1: $("#neutralization").text("중성화 X");
+          }
+          $("#fee").text("희망분양비 : "+String($("#fee").text()).replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')+"원");
+          $(".vaccin").each((index, element) => {
+            alert(this.val());
+              if($(this).val()==1) $(this).css("font-color", "black");
+              else $(this).css("font-color", "gray");
+          })
+        });
+      
 
+      
+
+    </script>
   </body>
 
 </html>
