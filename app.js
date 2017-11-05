@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const ejs = require('ejs');
 
+const passport = require('./libs/passport');
 const redisCfg = require('./config.json').redis;
 const redisStore = require('connect-redis')(session);
 const redis = require('redis')
@@ -19,7 +20,13 @@ const client = redis.createClient({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-//redis as session
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use(session({
   secret: redisCfg.secret,
   // create new redis store.
@@ -29,23 +36,23 @@ app.use(session({
     client: client
   }),
   saveUninitialized: false,
-  resave: false
+  resave: false,
+  cookie: {
+    key: ['GoodCat'],
+    maxAge: 24000 * 60 * 60
+  }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/', require('./controllers/index'));
-app.use('/user', require('./controllers/user'));
 app.use('/post', require('./controllers/post'));
 app.use('/favor', require('./controllers/favor'));
-
+app.use('/phone', require('./controllers/phone'));
 
 // error handler
 app.use(function(err, req, res, next) {

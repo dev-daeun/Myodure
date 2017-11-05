@@ -2,11 +2,11 @@ const pool = require('../libs/mysql');
 const dbConfig = require('../config.json').database;
 
 module.exports = {
-    insert: async function(userDto){
+    insert: async function(user){
         try {    
             var conn = await pool.getConnection();
-            await conn.query('insert into users set ? ', userDto);
-            return ;
+            let result = await conn.query('insert into users set ? ', user);
+            return result.insertId;
         } catch(err) {
             throw err;
         } finally {

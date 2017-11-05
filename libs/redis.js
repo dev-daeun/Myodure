@@ -20,7 +20,7 @@ class Redis{
             client.get(key, (err, result) => {
                 if(err) reject(err);
                 else {
-                    if(value==result) resolve(true);
+                    if(value===result) resolve(true);
                     else resolve(false);
                 }
             });

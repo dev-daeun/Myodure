@@ -2,19 +2,21 @@ const express = require('express');
 const router = express.Router();
 const ejs = require('ejs');
 
+const coolsms = require('../libs/coolsms');
 const UserDAO = require('../DAOs/user');
 const PostDAO = require('../DAOs/post');
 const UserService = require('../services/user');
 const Error = require('../libs/error');
 const Redis = require('../libs/redis');
+const passport = require('../libs/passport');
 const Encryption = require('../libs/encryption');
-const Auth = require('../libs/auth');
+const Jwt = require('../libs/jwt');
+
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   try{
       let urgentList = await PostDAO.selectUrgent();
-      console.log(urgentList);
       ejs.renderFile('views/index.ejs', {urgent: urgentList}, (err, view) => {
           if(err) next(err);
           else res.status(200).send(view);
@@ -25,56 +27,68 @@ router.get('/', async function(req, res, next) {
 });
 
 
+router.get('/signup', async function(req, res, next){
+  try{
+    ejs.renderFile('views/signup.ejs', (err, view) => {
+        if(err) next(err);
+        else res.status(200).send(view);
+    });
+  }
+  catch(err){
+    return next(new CustomError(500, err.message || err));
+  }
+});
 
 /* 회원가입 */
 router.post('/signup', async function(req, res, next){
   try{
-      if(!req.body.email) next(new Error(400, "이메일 주소를 입력하세요."));
-      if(!req.body.address) next(new Error(400, "비밀번호를 입력하세요."));
-      if(!req.body.phone) next(new Error(400, "핸드폰 번호를 입력하세요."));
-      if(!req.body.username) next(new Error(400, "이름을 입력하세요."));
-      if(!req.body.address) next(new Error(400, "거주지를 입력하세요."));
-
+      let emailDup = await UserService.checkDup("email", req.body.user.email);
+      if(emailDup) next(new Error(400,  "이미 사용중인 이메일 주소입니다."));
+      let phoneDup = await UserService.checkDup("phone", Encryption.encrypt(req.body.user.phone));
+      if(phoneDup) next(new Error(400,  "이미 사용중인 핸드폰 번호입니다."));
+      let usernameDup = await UserService.checkDup("username", req.body.user.username);
+      if(usernameDup) next(new Error(400,  "이미 사용중인 사용자 이름입니다."));
+     
       let getValue = await Redis.getValue(req.body.phone, "authorized");
-      // if(!getValue) next(401, "전화번호가 인증되지 않았습니다.");
-      // else{
-          let emailDup = await UserService.checkDup("email", req.body.email);
-          if(emailDup) next(new Error(400,  "이미 사용중인 이메일 주소입니다."));
-          let phoneDup = await UserService.checkDup("phone", Encryption.encrypt(req.body.phone));
-          if(phoneDup) next(new Error(400,  "이미 사용중인 핸드폰 번호입니다."));
-          let usernameDup = await UserService.checkDup("username", req.body.username);
-          if(usernameDup) next(new Error(400,  "이미 사용중인 사용자 이름입니다."));
-
-          await UserService.signup(req.body.username, req.body.email, req.body.phone, req.body.password, req.body.address);
-          res.status(201).send(true);
-    // }
+      if(!getValue) return next(new Error(401, "전화번호가 인증되지 않았습니다."));
+      let newUser = await UserService.signup(req.body.user);
+      res.status(201).send(newUser);
+    
   }catch(err){
     next(err);
   }   
 });
 
-
-
-router.post('/login', async function(req, res, next){
-    try{
-      if(!req.body.email) next(new Error(400, "이메일 주소를 입력하세요."));
-      if(!req.body.password) next(new Error(400, "비밀번호를 입력하세요."));
-      
-      let rightInfo = await UserService.login(req.body.email, req.body.password);
-      if(!rightInfo) next(new Error(401, "잘못된 이메일 주소 혹은 비밀번호 입니다."));
-      else {
-        let token = await Auth.generateToken(rightInfo);
-        req.session.token = token;
-        res.status(200).send(token);
-      }
-    }catch(err){
-      next(err);
-    }
+router.get('/login', async function(req, res, next){
+  try{
+    ejs.renderFile('views/login.ejs', (err, view) => {
+        if(err) next(err);
+        else res.status(200).send(view);
+    });
+  }
+  catch(err){
+    return next(new CustomError(500, err.message || err));
+  }
 });
 
+router.post('/login', async function(req, res, next){
+  try{
+    passport.authenticate('local', { 
+      failureFlash: true 
+    },(err, user, info) => {
+      if(err) return next(new CustomError(500, err.message || err));
+      if(!user) return next(new CustomError(401, info));
+      req.logIn(user, async err => {
+          if(err) return next(new CustomError(500, err.message || err));
+          let newToken = await Jwt.generateToken(String(user));
+          res.status(200).cookie('GoodCat', newToken).send(true);
+      });
+    })(req, res, next);
+  }catch(err){
+    next(err);
+  }
+});
 
-
-// router.use(require('./auth'));
 
 
 

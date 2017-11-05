@@ -1,22 +1,23 @@
 const Encryption = require('../libs/encryption');
-const UserDTO = require('../DTOs/user');
 const UserDAO = require('../DAOs/user');
 class UserService{
 
-    static async signup(username, email, phone, password, address){
+    static async signup(user){
         try{
-            let hashedPw = await Encryption.hash(password);
-            let encryptedPhone = Encryption.encrypt(phone);
-            let userDto = new UserDTO(username, email, encryptedPhone, hashedPw, address);
-            await UserDAO.insert(userDto);
-            return ;
+            let hashedPw = await Encryption.hash(user.password);
+            let encryptedPhone = Encryption.encrypt(user.phone);
+            
+            user.password = hashedPw;
+            user.phone = encryptedPhone;
+            let result = await UserDAO.insert(user);
+            return result;
         }catch(err){
             throw err;
         }
     }
 
     static async checkDup(col, data){
-        try{
+        try{           
            let result = UserDAO.selectByCol(col, data);
            if(result.length>0) return true;
            else return false;

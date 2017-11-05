@@ -1,5 +1,4 @@
 const PostDAO = require('../DAOs/post');
-const PostDTO = require('../DTOs/post');
 const CustomError = require('../libs/error');
 const express = require('express');
 const router = express.Router();
@@ -25,17 +24,8 @@ router.get('/', async function(req ,res ,next){
     }
 
 });
-router.get('/image', function(req, res, next){
-    ejs.renderFile('views/upload.ejs', (err, view) => {
-        res.status(200).send(view);
-    })
-});
-router.post('/image', upload.single('pic'), function(req, res, next){
-    console.log(req.file);
-    res.send(200);
-});
 
-// router.use(require('./auth'));
+
 router.get('/registration', async function(req, res, next){
     ejs.renderFile('views/register.ejs', (err, view)=>{
         if(err) next(err);

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>회원가입</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    
+        <!-- Custom styles for this template -->
+    <link href="../css/modern-business.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <!-- <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <% include ./navigation.ejs %>
+    <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
+            <div class="row">
+                    <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <h1 class="page-header">회원가입</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                        </div>
+                        <div class="panel-body">
+                        <form role="form" id="form" enctype="multipart/form-data">
+                            <div class="row">
+                                      
+                                        <label>이메일 주소</label>
+                                        <div class="form-group input-group" id="emailForm">
+                                            <input type="text" id="emailName" class='form-control' style="display: inline;">
+                                            <span style="margin: 4px;">@</span>
+                                            <select id="emailServer" name="emailServer" class="form-control" style="display: inline;">
+                                                <option value="naver.com" checked>naver.com</option>
+                                                <option value="daum.net">daum.net</option>
+                                                <option value="gmail.com">gmail.com</option>
+                                                <option value="etc">직접 입력</option>
+                                            </select> 
+                                        </div>
+                                
+                                        <label>아이디</label>
+                                        <div class="form-group input-group">
+                                            <input type="text" id="username" name="username" class="form-control">
+                                        </div>
+  
+                                        <label>비밀번호</label>
+                                        <div class="form-group input-group">
+                                            <input type="password" id="password" name="password" class="form-control">
+                                        </div>
+
+                                        <label>비밀번호 재확인</label>
+                                        <div class="form-group input-group">
+                                            <input type="password" id="passwordCheck" name="passwordCheck" class="form-control">
+                                        </div>
+
+                                        <label>주소(시/군/구 까지)</label>
+                                        <div class="form-group input-group">
+                                            <input type="text" name="address" id="address" class="form-control">
+                                        </div>
+
+                                        <label>핸드폰 번호</label>
+                                        <div class="form-group input-group" id="phone-group">
+                                            <input type="text" name="phone" id="phone" class="form-control" placeholder="하이픈(-)없이">
+                                            <input type="button" id="getSMS" value="인증번호 받기"> 
+                                        </div>
+                                      
+                                        <label>사용자 성별</label>
+                                        <div class="form-group input-group radio">
+                                                <label style="margin-right: 20px;">
+                                                    <input type="radio" name="gender" id="gender" value="여" checked>여
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="gender" id="gender" value="남">남
+                                                </label>
+                                        </div>
+
+                                        <label>가구 형태</label>
+                                        <div class="form-group input-group">
+                                            <select id="family" name="family" class="form-control" style="display: inline;">
+                                                <option value="1인 가구">1인 가구</option>
+                                                <option value="2인 가구">2인 가구</option>
+                                                <option value="3인 가구">3인 가구</option>
+                                                <option value="4인 가구이상">4인 가구 이상</option>
+                                            </select> 
+                                        </div>
+
+                                        <label>주거 형태</label>
+                                        <div class="form-group input-group">
+                                            <select id="residence" name="residence" class="form-control" style="display: inline;">
+                                                <option value="아파트">아파트</option>
+                                                <option value="빌라">빌라</option>
+                                                <option value="단독 주택">단독 주택</option>
+                                                <option value="다세대 주택">다세대 주택</option>
+                                                <option value="오피스텔">오피스텔</option>
+                                            </select> 
+                                        </div>
+                                   
+                            </div>
+                            <div class="form-group" style="text-align: center; margin-top: 30px;">
+                                <input type="submit" name="submit" id="registerButton" value="등록" class="btn btn-default">
+                            </div>
+        
+                        </form>    
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    
+                    <!-- /.panel -->
+                </div>
+                
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div> 
+        <!--container-->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+    
+    <script>
+        $(() => {
+
+            var emailEtc = false;
+            $("body").on("change", "#emailServer", (ent) => {
+                if($(ent.target).val()==="etc"){
+                    $("#emailForm").append(`<input type="text" id="emailServerEtc" class='form-control' style="display: inline;">`);
+                   emailEtc = true;
+                }     
+                else {
+                    $("#emailServerEtc").remove();
+                    emailEtc = false;
+                }
+            });
+
+            $("body").on('click', '#getSMS', (ent) => {
+                if($("#phone").val()==="") return alert("핸드폰번호를 입력하세요.");
+                $.ajax({ 
+                        url: '/phone?phone='+$("#phone").val(),
+                        processData: false,
+                        type: 'GET',
+                        success: function(){
+                            alert("인증번호를 발송했습니다. 3분이내로 인증을 마쳐주세요.");
+                            $(ent.target).remove();
+                            $(`<div class="form-group input-group" id="auth-group">
+                                <input type="text" id="authNum" class="form-control">
+                                <button id="authSMS">인증하기</button>
+                               </div>`).insertAfter("#phone-group");
+                        },
+                        error: function(xhr, status, error){
+                            alert(xhr.responseText);
+                        }
+                    });
+            });
+
+            $("body").on('click', '#authSMS', (ent) => {
+                ent.preventDefault();
+                if($("#authNum").val()==="") return alert("인증번호를 입력하세요.");
+                $.ajax({ 
+                        url: '/phone',
+                        processData: false,
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            phone: $("#phone").val(),
+                            authNum: $("#authNum").val()
+                        }),
+                        success: function(){
+                           document.getElementById("authNum").disabled = true;
+                           document.getElementById("authSMS").disabled = true;
+                            return alert("인증이 완료되었습니다. 10분내로 회원가입을 마쳐주세요.");
+                            
+                        },
+                        error: function(xhr, status, error){
+                            alert(xhr.responseText);
+                        }
+                    });
+            })
+
+            $("body").on("click", "#registerButton", () => {
+                if(confirm("등록하시겠습니까?")){
+                    let checked = {
+                        'emailName': '이메일주소',
+                        'username': '아이디',
+                        'password': '비밀번호',
+                        'passwordCheck': '비밀번호',
+                        'address': '주소',
+                        'phone': '핸드폰 번호',
+                        'family': '가구 형태',
+                        'residence': '주거 형태'
+                    };
+                    
+                    for(let key of Object.keys(checked)){
+                        if($('#'+key).val()=="") return alert(checked[key]+'를 입력하세요');
+                    }
+
+                
+                    let reg = /^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/;
+                    let emailServer = emailEtc ? $("#emailServerEtc").val() : $("#emailServer").val();
+                    if(!reg.test($('#emailName').val() + '@'+emailServer)) {
+                        return alert('이메일 주소가 적절하지 않습니다.');
+                    }
+
+
+                    if($('#password').val()!==$('#passwordCheck').val()) 
+                        return alert('비밀번호를 재확인해주세요');
+
+                    
+                    $.ajax({ 
+                        url: '/signup',
+                        processData: false,
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data: 
+                            JSON.stringify({
+                                user: {
+                                username: $('#username').val(),
+                                password: $('#password').val(),
+                                email: $('#emailName').val() + '@'+ emailServer,
+                                address: $('#address').val(),
+                                phone: $('#phone').val(),
+                                family: $('#family').val(),
+                                residence: $('#residence').val(),
+                                gender: $('#gender:checked').val()
+                            }
+                        }),
+                        success: function(newPostId){
+                            alert("회원가입이 완료되었습니다.");
+                            location.href = '/login';
+                        },
+                        error: function(xhr, status, error){
+                            alert(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+        })
+    </script>
+
+</body>
+
+</html>
