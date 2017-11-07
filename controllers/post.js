@@ -25,6 +25,7 @@ router.get('/', async function(req ,res ,next){
 
 });
 
+router.use(require('./auth').isAuthenticated);
 
 router.get('/registration', async function(req, res, next){
     ejs.renderFile('views/register.ejs', (err, view)=>{

@@ -39,28 +39,24 @@
         <!-- LOGIN FORM -->
                 <%include ./navBeforeLogin.ejs%>
                 <div class="text-center" style="padding:50px 0">
-                        <div class="logo">로그인</div>
+                    <div class="logo">로그인</div>
                         <!-- Main Form -->
-                        <div class="login-form-1">
+                    <div class="login-form-1">
                             <form id="login-form" class="text-left">
                                 <div class="login-form-main-message"></div>
                                 <div class="main-login-form">
                                     <div class="login-group">
                                         <div class="form-group">
                                             <label for="lg_username" class="sr-only">Email</label>
-                                            <input type="text" class="form-control" id="email" name="email" placeholder="name@server.com">
+                                            <input type="text" class="form-control" id="email" name="email" placeholder="yourname@domain.com">
                                         </div>
                                         <div class="form-group">
                                             <label for="lg_password" class="sr-only">Password</label>
                                             <input type="password" class="form-control" id="password" name="password" placeholder="password">
                                         </div>
-                                        <div class="form-group login-group-checkbox">
-                                            <input type="checkbox" id="lg_remember" name="lg_remember">
-                                            <label for="lg_remember">remember</label>
-                                        </div>
                                     </div>
                                     <div class="form-group" style="text-align: center;">
-                                        <input type="submit" name="submit" class="btn btn-default" value="로그인" class="btn btn-default">
+                                        <input type="submit" name="submit" class="btn btn-default" value="로그인">
                                     </div>
                                 </div>
                                 <div class="etc-login-form">
@@ -68,7 +64,7 @@
                                     <p>아직 회원이 아니세요? <a href="/signup">회원가입</a></p>
                                 </div>
                             </form>
-                        </div>
+                    </div>
                         <!-- end:Main Form -->
                 </div>                      
         </div> 
@@ -81,31 +77,32 @@
     <script>
             /*로그인*/
             $(() => {
-              $('.login-form-1').keypress(() => {
+              $('.main-login-form').keypress(() => {
                   let keycode = (event.keyCode ? event.keyCode : event.which);
                   if(keycode == '13'){
-                      let user = $('.login-form-1').find('#email').val();
-                      let password = $('.login-form-1').find('#password').val();
+                      let email = $('.main-login-form').find('#email').val();
+                      let password = $('.main-login-form').find('#password').val();
               
                       if(email==''||password=='') {
                           alert("이메일 주소 및 비밀번호를 입력하세요.");
                           return;
                       }
+
                       $.ajax({ 
-                      url: '/login', 
-                      processData: false,
-                      type: 'POST',
-                      contentType: 'application/json; charset=utf-8',
-                      dataType: 'json',
-                      data: JSON.stringify({ email: email, password: password }), 
-                      success: function(data){
-                          window.location.href = '/';
-                      },
-                      error: function(xhr, status, error){
-                          window.alert(xhr.responseText);
-                          window.location.href = '/login';
-                      }
-                  });
+                        url: '/login', 
+                        processData: false,
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data: JSON.stringify({ email: email, password: password }), 
+                        success: function(data){
+                            window.location.href = '/';
+                        },
+                        error: function(xhr, status, error){
+                            window.alert(xhr.responseText);
+                            window.location.href = '/login';
+                        }
+                    });
                   }
               });
             });

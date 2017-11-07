@@ -218,7 +218,8 @@
                     });
             })
 
-            $("body").on("click", "#registerButton", () => {
+            $("body").on("click", "#registerButton", (ent) => {
+                ent.preventDefault();
                 if(confirm("등록하시겠습니까?")){
                     let checked = {
                         'emailName': '이메일주소',

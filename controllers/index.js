@@ -6,7 +6,7 @@ const coolsms = require('../libs/coolsms');
 const UserDAO = require('../DAOs/user');
 const PostDAO = require('../DAOs/post');
 const UserService = require('../services/user');
-const Error = require('../libs/error');
+const LocalError = require('../libs/error');
 const Redis = require('../libs/redis');
 const passport = require('../libs/passport');
 const Encryption = require('../libs/encryption');
@@ -35,7 +35,7 @@ router.get('/signup', async function(req, res, next){
     });
   }
   catch(err){
-    return next(new CustomError(500, err.message || err));
+    return next(new LocalError(500, err.message || err));
   }
 });
 
@@ -43,43 +43,34 @@ router.get('/signup', async function(req, res, next){
 router.post('/signup', async function(req, res, next){
   try{
       let emailDup = await UserService.checkDup("email", req.body.user.email);
-      if(emailDup) next(new Error(400,  "이미 사용중인 이메일 주소입니다."));
+      if(emailDup) next(new LocalError(400,  "이미 사용중인 이메일 주소입니다."));
       let phoneDup = await UserService.checkDup("phone", Encryption.encrypt(req.body.user.phone));
-      if(phoneDup) next(new Error(400,  "이미 사용중인 핸드폰 번호입니다."));
+      if(phoneDup) next(new LocalError(400,  "이미 사용중인 핸드폰 번호입니다."));
       let usernameDup = await UserService.checkDup("username", req.body.user.username);
-      if(usernameDup) next(new Error(400,  "이미 사용중인 사용자 이름입니다."));
+      if(usernameDup) next(new LocalError(400,  "이미 사용중인 사용자 이름입니다."));
      
-      let getValue = await Redis.getValue(req.body.phone, "authorized");
-      if(!getValue) return next(new Error(401, "전화번호가 인증되지 않았습니다."));
+      let getValue = await Redis.getValue(req.body.user.phone);
+      console.log(getValue);
+      if(getValue!=="authorized") return next(new LocalError(401, "전화번호가 인증되지 않았습니다."));
       let newUser = await UserService.signup(req.body.user);
-      res.status(201).send(newUser);
+      res.status(201).send(true);
     
   }catch(err){
     next(err);
   }   
 });
 
-router.get('/login', async function(req, res, next){
-  try{
-    ejs.renderFile('views/login.ejs', (err, view) => {
-        if(err) next(err);
-        else res.status(200).send(view);
-    });
-  }
-  catch(err){
-    return next(new CustomError(500, err.message || err));
-  }
-});
+
 
 router.post('/login', async function(req, res, next){
   try{
     passport.authenticate('local', { 
       failureFlash: true 
     },(err, user, info) => {
-      if(err) return next(new CustomError(500, err.message || err));
-      if(!user) return next(new CustomError(401, info));
+      if(err) return next(new LocalError(500, err.message || err));
+      if(!user) return next(new LocalError(401, info));
       req.logIn(user, async err => {
-          if(err) return next(new CustomError(500, err.message || err));
+          if(err) return next(new LocalError(500, err.message || err));
           let newToken = await Jwt.generateToken(String(user));
           res.status(200).cookie('GoodCat', newToken).send(true);
       });
@@ -90,7 +81,19 @@ router.post('/login', async function(req, res, next){
 });
 
 
+router.get('/login', async function(req, res, next){
+  try{
+    ejs.renderFile('views/login.ejs', (err, view) => {
+        if(err) next(err);
+        else res.status(200).send(view);
+    });
+  }
+  catch(err){
+    return next(new LocalError(500, err.message || err));
+  }
+});
 
+router.use(require('./auth').isAuthenticated);
 
 router.post('/logout', async function(req, res, next){
   try{

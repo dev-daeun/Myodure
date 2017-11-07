@@ -15,14 +15,11 @@ class Redis{
         });
     }
 
-    static getValue(key, value){
+    static getValue(key){
         return new Promise((resolve, reject) => {
             client.get(key, (err, result) => {
                 if(err) reject(err);
-                else {
-                    if(value===result) resolve(true);
-                    else resolve(false);
-                }
+                else resolve(result);
             });
         });
     }

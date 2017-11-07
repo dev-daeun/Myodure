@@ -10,7 +10,7 @@ passport.serializeUser((userId, done) => {
 });
 
 passport.deserializeUser(async (userId, done) => {
-    let user = await UserDAO.selectByCol(userId);
+    let user = await UserDAO.selectByCol('id', userId);
    
     if(!user) return done();
     return done(null, userId);
@@ -28,7 +28,7 @@ passport.use(new LocalStrategy({ // local 전략을 세움
         let result = await UserDAO.selectByCol('email', email);
         if(!result.length) return done(null, false, '존재하지 않는 아이디입니다.');
       
-        let correct = await Encryption.compare(password, result.password);
+        let correct = await Encryption.compare(password, result[0].password);
         if(!correct) return done(null, false, '잘못된 패스워드입니다.' ); 
       
         return done(null, result[0].id);

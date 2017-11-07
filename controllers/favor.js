@@ -7,6 +7,8 @@ const express = require('express');
 const router = express.Router();
 const ejs = require('ejs');
 
+router.use(require('./auth').isAuthenticated);
+
 router.get('/', async function(req, res, next){
     try{
         let result = await FavorDAO.select(1);
