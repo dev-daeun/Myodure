@@ -56,7 +56,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group" style="text-align: center;">
-                                        <input type="submit" name="submit" class="btn btn-default" value="로그인">
+                                        <input type="submit" name="submit" id="login-submit" class="form-control btn btn-default" value="로그인">
                                     </div>
                                 </div>
                                 <div class="etc-login-form">
@@ -75,35 +75,41 @@
         <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script>
+        function login(){
+            let email = $('.main-login-form').find('#email').val();
+            let password = $('.main-login-form').find('#password').val();
+            if(email==''||password=='') {
+                 alert("이메일 주소 및 비밀번호를 입력하세요.");
+                 return;
+            }
+
+            $.ajax({ 
+                url: '/login', 
+                processData: false,
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ email: email, password: password }), 
+                success: function(data){
+                    window.location.href = '/';
+                },
+                error: function(xhr, status, error){
+                    window.alert(xhr.responseText);
+                    window.location.href = '/login';
+                }
+            });
+        }
             /*로그인*/
             $(() => {
-              $('.main-login-form').keypress(() => {
+              $('.form-control').keypress((ent) => {
+                  ent.preventDefault();
                   let keycode = (event.keyCode ? event.keyCode : event.which);
-                  if(keycode == '13'){
-                      let email = $('.main-login-form').find('#email').val();
-                      let password = $('.main-login-form').find('#password').val();
-              
-                      if(email==''||password=='') {
-                          alert("이메일 주소 및 비밀번호를 입력하세요.");
-                          return;
-                      }
+                  if(keycode == '13') login();
+              });
 
-                      $.ajax({ 
-                        url: '/login', 
-                        processData: false,
-                        type: 'POST',
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        data: JSON.stringify({ email: email, password: password }), 
-                        success: function(data){
-                            window.location.href = '/';
-                        },
-                        error: function(xhr, status, error){
-                            window.alert(xhr.responseText);
-                            window.location.href = '/login';
-                        }
-                    });
-                  }
+              $('body').on('click', '#login-submit', (ent) => {
+                  ent.preventDefault();
+                  login();
               });
             });
         </script>

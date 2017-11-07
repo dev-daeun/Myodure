@@ -95,14 +95,16 @@ router.get('/login', async function(req, res, next){
 
 router.use(require('./auth').isAuthenticated);
 
-router.post('/logout', async function(req, res, next){
-  try{
-    req.session.destroy();
-    req.id = null;
-    res.status(200).send(true);
-  }catch(err){
-    next(err);
-  }
+
+router.get('/logout', async function(req, res, next){
+  req.session.destroy(err => {
+    if(err) next(new CustomError(500, err.message || err));
+    req.user = null;
+    res.clearCookie('GoodCat')
+       .clearCookie('connect.sid')
+       .status(200)
+       .redirect('/login');
+});
 });
 
 
