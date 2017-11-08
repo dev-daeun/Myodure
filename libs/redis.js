@@ -1,11 +1,21 @@
-const redis = require('redis');
 const redisCfg = require('../config.json').redis;
+const redis = require('redis');
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
 const client = redis.createClient({
     password: redisCfg.password
 });
 
 class Redis{
 
+    static getRedisSession() {
+        return new redisStore({ 
+            host: redisCfg.host, 
+            port: redisCfg.port, 
+            client: client
+        });
+    }
+       
     static setValue(key, value, expiredTime){
         return new Promise((resolve, reject) => {
             client.set(key, value, "EX", expiredTime, (err) => {

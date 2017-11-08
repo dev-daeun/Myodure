@@ -10,11 +10,7 @@ const ejs = require('ejs');
 
 const passport = require('./libs/passport');
 const redisCfg = require('./config.json').redis;
-const redisStore = require('connect-redis')(session);
-const redis = require('redis')
-const client = redis.createClient({
-  password: redisCfg.password
-});
+const RedisSession = require('./libs/redis').getRedisSession();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,14 +23,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 app.use(session({
   secret: redisCfg.secret,
   // create new redis store.
-  store: new redisStore({ 
-    host: redisCfg.host, 
-    port: redisCfg.port, 
-    client: client
-  }),
+  store: RedisSession,
   saveUninitialized: false,
   resave: false,
   cookie: {
@@ -53,6 +46,7 @@ app.use('/', require('./controllers/index'));
 app.use('/post', require('./controllers/post'));
 app.use('/favor', require('./controllers/favor'));
 app.use('/phone', require('./controllers/phone'));
+app.use('/chat', require('./controllers/chat'));
 
 // error handler
 app.use(function(err, req, res, next) {

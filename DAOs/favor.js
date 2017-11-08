@@ -1,5 +1,5 @@
 const pool = require('../libs/mysql');
-const dbConfig = require('../config.json').database;
+
 
 module.exports = {
     insert: async function(postId, userId){

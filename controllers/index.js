@@ -5,12 +5,14 @@ const ejs = require('ejs');
 const coolsms = require('../libs/coolsms');
 const UserDAO = require('../DAOs/user');
 const PostDAO = require('../DAOs/post');
+const ChatDAO = require('../DAOs/chat');
 const UserService = require('../services/user');
 const LocalError = require('../libs/error');
 const Redis = require('../libs/redis');
 const passport = require('../libs/passport');
 const Encryption = require('../libs/encryption');
 const Jwt = require('../libs/jwt');
+
 
 
 /* GET home page. */
@@ -119,6 +121,8 @@ router.delete('/signout', async function(req, res, next){
     next(err);
   }
 });
+
+
 
 
 module.exports = router;

@@ -1,6 +1,5 @@
 const pool = require('../libs/mysql');
-const dbConfig = require('../config.json').database;
-const postDAO = new Object();
+
 
 module.exports = {
     selectUrgent: async function(){
