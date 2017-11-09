@@ -26,6 +26,7 @@ const Chat = require('../DAOs/chat');
 const Msg = require('../DAOs/message');
 const session = require('../libs/redis').getRedisSession();
 const Jwt = require('../libs/jwt');
+const ChatService = require('../services/chat');
 
 const connect = require('connect');
 const moment = require('moment');
@@ -34,12 +35,19 @@ const io = require('socket.io')(server);
 
    
         client.on("enterRoom", async roomId => {
-          let messages = await Msg.selectAll(3, 1);
-          console.log("history: ", messages);
-          messages.forEach(msg => {
-            msg.sent_time = moment(msg.sent_time).format("YY.MM.DD HH:MM:SS");
-          });
-          client.emit("enumMessages",  JSON.stringify(messages)); 
+            let messages = await Msg.selectAll(3, 1);
+                messages.forEach(msg => {
+                    msg.sent_time = moment(msg.sent_time).format("YY.MM.DD HH:MM:SS");
+                });
+            client.emit("enumMessages",  JSON.stringify(messages)); 
+        });
+
+        client.on("sendMessage", async (packet) => {
+            let sentTime = new Date();
+            let senderName = await ChatService.sendMessage(packet.senderId, packet.talkId, packet.content, sentTime);
+            packet.sentTime =  moment(sentTime).format("YY.MM.DD HH:MM:SS");
+            packet.senderName = senderName;
+            client.emit("appendMessage", packet);
         });
 
       });

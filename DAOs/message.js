@@ -21,5 +21,19 @@ module.exports = {
         }finally{
             await pool.releaseConnection(conn);
         }
+    },
+    insert: async function(conn, senderId, talkId, content, sentTime){
+        try{ 
+            await conn.query("insert into talk_messages set ?", {
+                sender_id: senderId,
+                talk_id: talkId,
+                content: content,
+                sent_time: sentTime
+            });
+        }catch(err){
+            await conn.rollback();
+            throw err;
+        }
     }
 }
+    

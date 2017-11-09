@@ -46,5 +46,15 @@ module.exports = {
         }finally{
             await conn.releaseConnection();
         }
+    },
+    update: async function(conn, senderId, talkId, content, sentTime){
+        try{
+            await conn.query('update talks set sender_id = ?, content = ?, sent_time = ? where id = ?', [senderId, content, sentTime, talkId]);
+            return;
+        }
+        catch(err){
+            conn.rollback();
+            throw err;
+        }
     }
 }

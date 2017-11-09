@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -40,64 +39,90 @@
           <div class="grid-block small-12 medium-9 vertical" id="board">
             <div class="grid-content" id="chatlist">
               <% for(let i = 0; i<list.length; i++){ %>
-                <div class="chat-element" value="<%=list[i].id%>">
-                  <h4><%=list[i].username%></h4>
+                <div class="chat-element">
+                  <h4 id="<%=list[i].id%>"><%=list[i].username%></h4>
                   <button class="btn btn-danger" style="display:none;" value="<%=list[i].unread%>"><%=list[i].unread%></button>
                   <p><%=list[i].content%></p>
                   <h6><%=list[i].sent_time%></h6>
                   <hr />
                 </div>
               <% } %>
-              <h4> Cady Heron</h4>
-              <p>Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio. Proin quis tortor orci. Etiam at risus et justo dignissim congue.</p>
-              <h6>2013-03-31 13:30:30</h6>
-              <hr />
             </div>
           </div>
+        </div>
       </div>
     </div>
-  </div>
      <!-- jQuery -->
   <script src="../vendor/jquery/jquery.min.js"></script>
   <script>
+    var socket;
       $(() => {
-          var socket = io.connect();
-          $("body").on("click", '.chat-element', (ent) => {
-            alert(parseInt($(ent.target).val()))
-              socket.emit("enterRoom",1);
-              socket.on("enumMessages", (messages) => {
-                  let message = JSON.parse(messages);
-                  $("#chatlist").children().remove();
-                    for(let i = 0; i<message.length; i++) { 
-                      let color;
-                      if(message[i].sender_id!=1) color="#ffffff";
-                      else color = "#f4cd97"; //본인이면 메세지 창 노란색
+          socket = io.connect();
+          $("body").on("click", ".chat-element", (ent) => {
+              socket.emit("enterRoom", parseInt($(ent.target).attr("id"))); 
+          });
 
-                        $("#chatlist").append(`
-                          <div class="msg-element" value="`+message[i].sender_id+`">
-                            <div style="background-color: `+color+`;">
-                            <h4>`+message[i].username+`</h4>
-                            <p>`+message[i].content+`</p>
-                            <h6>`+message[i].sent_time+`</h6>
-                            <hr />
-                          </div>
-                        </div>   
-                        `);                    } 
-                  $("#board").append(`
-                  <div class="message-input grid-content collapse shrink">
-                    <span class="inline-label">
-                      <input type="text" placeholder="Message">
-                      <a href="#" class="button">Send</a>
-                    </span>
-                  </div>
-                  `);
-              });   
+          /* 메세지 전송 이벤트 */
+          $("body").on("keypress", '.form-control', (ent) => {
+              let keycode = (event.keyCode ? event.keyCode : event.which);
+              if(keycode == '13') sendMessage();
+          });
 
-              socket.on("unauth", message => {
+          $('body').on('click', '#send-button', (ent) => {
+              sendMessage();
+          });
+         
+          socket.on("enumMessages", (messages) => {
+              let message = JSON.parse(messages);
+              $("#chatlist").children().remove();
+              for(let i = 0; i<message.length; i++) { 
+                  let color;
+                  if(message[i].sender_id!=1) color="#ffffff";
+                  else color = "#ffd891"; //본인이면 메세지 창 노란색
+                  $("#chatlist").append(`<div class="msg-element" value="`+message[i].sender_id+`">
+                                            <div style="background-color: `+color+`;">
+                                              <h4>`+message[i].username+`</h4>
+                                              <p>`+message[i].content+`</p>
+                                              <h6>`+message[i].sent_time+`</h6>
+                                              <hr />
+                                            </div>
+                                          </div>`);                    
+              } 
+              $("#board").append(`<div class="message-input grid-content collapse shrink">
+                                    <input type="text" placeholder="Message" class="form-control">
+                                    <button id="send-button" class="form-control button">Send</button>
+                                  </div>`);
+              $("#board").val(message[0].talk_id);
+          });  
+
+
+          socket.on("appendMessage", packet => {
+            let color;
+            if(packet.senderId!=1) color="#ffffff";
+            else color = "#ffd891"; //본인이면 메세지 창 노란색
+            $("#chatlist").append(`<div class="msg-element" value="`+packet.senderId+`">
+                                      <div style="background-color: `+color+`;">
+                                        <h4>`+packet.senderName+`</h4>
+                                        <p>`+packet.content+`</p>
+                                        <h6>`+packet.sentTime+`</h6>
+                                        <hr />
+                                      </div>
+                                    </div>`);  
+          });
+
+          socket.on("unauth", message => {
                 return alert(message);
-              });
-          })
+          });
       });
+
+    function sendMessage(){
+        if($(".form-control").val()=="") return alert("메시지 내용을 입력하세요.");
+        socket.emit("sendMessage", {
+            content: $(".form-control").val(),
+            senderId: 1, 
+            talkId: parseInt($("#board").val())
+        });
+    }
   </script>
   </body>
 </html>
