@@ -16,10 +16,10 @@ module.exports = {
             await pool.releaseConnection(conn);
         }
     },
-    delete: async function(favorId){
+    delete: async function(postId, userId){
         try{
             var conn = await pool.getConnection();
-            await conn.query('delete from favorites where id = ?', [favorId]);
+            await conn.query('delete from favorites where post_id = ? and user_id = ?', [postId, userId]);
             return;
         }catch(err){
             throw err;
@@ -35,14 +35,12 @@ module.exports = {
                     posts.title, 
                     posts.introduction, 
                     posts.created_at, 
-                    posts.thumbnail,
-                    favorites.id as favorId
-            FROM   favorites, 
-                    posts 
-            WHERE  favorites.user_id = ?
-                    AND favorites.post_id = posts.id 
-            ORDER  BY favorites.id DESC 
-            `, [userId]);
+                    posts.thumbnail
+            FROM    posts 
+            JOIN    favorites 
+            ON      favorites.user_id = ?
+            AND favorites.post_id = posts.id 
+            ORDER  BY favorites.id DESC`, [userId]);
             return result;
         }catch(err){
             throw err;

@@ -32,7 +32,7 @@ app.use(session({
   resave: false,
   cookie: {
     key: ['GoodCat'],
-    maxAge: 24000 * 60 * 60
+    maxAge: 24000 * 60 * 60 + 60
   }
 }));
 app.use(passport.initialize());

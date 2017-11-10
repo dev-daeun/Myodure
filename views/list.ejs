@@ -35,26 +35,30 @@
       <hr>
 
       <!-- list -->
-      <% for(let i = 0; i<posts.length; i++) { %>
-        <div class="row">
-          <div class="col-md-7">
-            <a href="/post/<%=posts[i].id%>">
-              <img class="img-fluid rounded mb-3 mb-md-0" width="600px" src="<%=posts[i].thumbnail%>" alt="">
-            </a>
+      <%if(posts.length===0){ %>
+          <p>콘텐츠가 아직 없습니다.</p>
+      <%} else {%>
+        <% for(let i = 0; i<posts.length; i++) { %>
+          <div class="row">
+            <div class="col-md-7">
+              <a href="/post/<%=posts[i].id%>">
+                <img class="img-fluid rounded mb-3 mb-md-0" width="600px" src="<%=posts[i].thumbnail%>" alt="">
+              </a>
+            </div>
+            <div class="col-md-5" style="margin-top: 50px;">
+              <h3><%=posts[i].title%></h3>
+              <p class="lead"><%=posts[i].introduction%><h6><%=posts[i].created_at%></h6></p> 
+              <a class="btn btn-warning" value="<%=posts[i].id%>" href="/post/<%=posts[i].id%>">자세히 보기
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </a>
+              <button class="favor btn" value="<%=posts[i].isFavor%>"> 
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </div>
           </div>
-          <div class="col-md-5" style="margin-top: 50px;">
-            <h3><%=posts[i].title%></h3>
-            <p class="lead"><%=posts[i].introduction%><h6><%=posts[i].created_at%></h6></p> 
-            <a class="btn btn-warning" value="<%=posts[i].id%>" href="/post/<%=posts[i].id%>">자세히 보기
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </a>
-            <button class="favor btn" value="<%=posts[i].favorId%>"> 
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
-          </div>
-        </div>
-        <hr>
-        <% } %>
+          <hr>
+          <% } %>
+      <% } %>
       <!-- /.row -->
 
 
@@ -119,47 +123,46 @@
  
         $("body").on("click", ".favor", (ent) => {
           if(parseInt($(ent.target).val())===0){
-            $.ajax({
-              processData: false,
-              type: "POST",
-              dataType: "json",
-              contentType: "application/json",
-              url: '/favor',
-              data: JSON.stringify({
-                postId: $(ent.target).siblings('a').attr('value')
-              }),
-              success: function(data){
-                $(ent.target).removeClass('btn-default');
-                $(ent.target).addClass('btn-danger');
-                $(ent.target).text("내가 찜한 냥");
-                $(ent.target).val(data);
-              },
-              error: function(xhr, status, err){
-                alert(xhr.responseText);
-              }
-            });
+              $.ajax({
+                  processData: false,
+                  type: "POST",
+                  dataType: "json",
+                  contentType: "application/json",
+                  url: '/favor',
+                  data: JSON.stringify({
+                    postId: $(ent.target).siblings('a').attr('value')
+                  }),
+                  success: function(data){
+                    $(ent.target).removeClass('btn-default');
+                    $(ent.target).addClass('btn-danger');
+                    $(ent.target).text("내가 찜한 냥");
+                    $(ent.target).val(1);
+                  },
+                  error: function(xhr, status, err){
+                    alert(xhr.responseText);
+                  }
+              });
           }
           else{
-            $.ajax({
-              processData: false,
-              type: "DELETE",
-              dataType: "json",
-              contentType: "application/json",
-              url: '/favor',
-              data: JSON.stringify({
-                favorId: $(ent.target).val(),
-                postId: $(ent.target).siblings('a').attr('value')
-              }),
-              success: function(data){
-                $(ent.target).removeClass('btn-danger');
-                $(ent.target).addClass('btn-default');
-                $(ent.target).text("내가 찜한 냥에 추가");
-                $(ent.target).val(null);
-              },
-              error: function(xhr, status, err){
-                alert(xhr.responseText);
-              }
-            });
+              $.ajax({
+                  processData: false,
+                  type: "DELETE",
+                  dataType: "json",
+                  contentType: "application/json",
+                  url: '/favor',
+                  data: JSON.stringify({
+                    postId: $(ent.target).siblings('a').attr('value')
+                  }),
+                  success: function(data){
+                    $(ent.target).removeClass('btn-danger');
+                    $(ent.target).addClass('btn-default');
+                    $(ent.target).text("내가 찜한 냥에 추가");
+                    $(ent.target).val(0);
+                  },
+                  error: function(xhr, status, err){
+                    alert(xhr.responseText);
+                  }
+              });
           }
         });
       });

@@ -10,8 +10,7 @@ class PostService{
             await conn.beginTransaction();
             
             let newPost = await Post.insert(conn, spec);
-            //images는 이미지url만 프로퍼티로 갖는 제이슨 배열
-
+            
             images.forEach( element => {
                 element.push(newPost);
             });

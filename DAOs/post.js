@@ -13,14 +13,27 @@ module.exports = {
             await pool.releaseConnection(conn);
         }
     },
-    selectAll: async function(){
+    selectAll: async function(userId){
         try{
             var conn = await pool.getConnection();
             let results = await conn.query(
-                `select posts.id, thumbnail, title, introduction, spiece, age, posts.gender, username 
-                from posts join users 
-                on posts.user_id = users.id 
-                order by posts.id desc`);
+                `SELECT * 
+                 FROM  (SELECT posts.id, 
+                               thumbnail, 
+                               title, 
+                               introduction, 
+                               spiece, 
+                               age, 
+                               posts.gender, 
+                               username 
+                        FROM   posts 
+                               JOIN users 
+                                 ON posts.user_id = users.id 
+                        ORDER  BY posts.id DESC) AS POST 
+                        LEFT OUTER JOIN (SELECT post_id AS favor_id 
+                                        FROM   favorites 
+                                        WHERE  user_id = ?) AS FAVOR 
+                        ON FAVOR.favor_id = POST.id`, [userId]);
             return results;
         }catch(err){
             throw err;

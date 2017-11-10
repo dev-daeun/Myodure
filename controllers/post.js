@@ -10,16 +10,17 @@ const upload = require('../libs/s3').getUpload();
 
 router.get('/', async function(req ,res ,next){
     try{
-        let page = req.query.page,
-            posts = await PostDAO.selectAll(1);
-            posts.forEach((element) => {
-                element.created_at = moment(element.created_at).format("YYYY.MM.DD");
-                if(element.favorId==null) element.favorId = 0;
-            })
-        ejs.renderFile('views/list.ejs', {posts: posts} ,(err, view) => {
-            if(err) next(err);
-            else res.status(200).send(view);
-        });
+            let posts = await PostDAO.selectAll(req.session.passport.user);
+                posts.forEach((element) => {
+                    element.created_at = moment(element.created_at).format("YYYY.MM.DD");
+                    if(element.favor_id==null) element.isFavor = 0;
+                    else element.isFavor = 1;
+                    delete element.favor_id;
+                })
+            ejs.renderFile('views/list.ejs', {posts: posts} ,(err, view) => {
+                if(err) next(err);
+                else res.status(200).send(view);
+            });
     }catch(err){
         next(err);
     }
@@ -75,9 +76,9 @@ router.post('/',  upload.fields([{
                         'spiece': "묘종", 
                         'fee': "분양비"
             };
-            // for(let key in keys)
-            //     if(!req.body[key]||req.body[key]=='') 
-            //         return next(new CustomError(400, keys[key]+"(를/을) 입력하세요.")); 
+            for(let key in keys)
+                if(!req.body[key]||req.body[key]=='') 
+                    return next(new CustomError(400, keys[key]+"(를/을) 입력하세요.")); 
 
 
             let specification = req.body;
