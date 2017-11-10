@@ -1,11 +1,12 @@
 const PostDAO = require('../DAOs/post');
+const PostService = require('../services/post');
 const CustomError = require('../libs/error');
 const express = require('express');
 const router = express.Router();
 const ejs = require('ejs');
 const multer  = require('multer');
 const moment = require('moment');
-const upload = require('../libs/uploadImage').getUpload("cat");
+const upload = require('../libs/s3').getUpload();
 
 router.get('/', async function(req ,res ,next){
     try{
@@ -78,17 +79,19 @@ router.post('/',  upload.fields([{
             //     if(!req.body[key]||req.body[key]=='') 
             //         return next(new CustomError(400, keys[key]+"(를/을) 입력하세요.")); 
 
-            let spec = req.body;
-                spec.lineage = "https://s3.ap-northeast-2.amazonaws.com/good-cat/cat/cat1.jpg";
-            let inserted = await PostDAO.insert(spec, [[
-                null,
-                "https://s3.ap-northeast-2.amazonaws.com/good-cat/cat/cat1.jpg"
-            ],[
-                null,
-                "https://s3.ap-northeast-2.amazonaws.com/good-cat/cat/cat1.jpg"
-            ]
-        ]);
-            res.status(201).send(""+inserted);             
+
+            let specification = req.body;
+                specification.user_id = req.session.passport.user;
+                specification.lineage = req.files.lineage ? req.files.lineage[0].location : null;
+                specification.thumbnail = req.files.images[0].location;
+
+            let imageArray = new Array();
+            req.files.images.forEach( element => {
+                imageArray.push([element.location]);
+            });
+
+            let newPostId = await PostService.postNew(specification, imageArray); 
+            res.status(201).send(""+newPostId);             
         }catch(err){
             next(new CustomError(500, err.message || err));
         }

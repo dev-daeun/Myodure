@@ -49,5 +49,14 @@ module.exports = {
         }finally{
             await pool.releaseConnection(conn);
         }
+    },
+    insert: async function(conn, spec){
+        try{
+            let newPost = await conn.query('insert into posts set ? ', spec);
+            console.log(newPost);
+            return newPost.insertId;
+        }catch(err){
+            throw err;
+        }
     }
 };

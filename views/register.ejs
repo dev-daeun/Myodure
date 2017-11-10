@@ -53,7 +53,7 @@
                         <div class="panel-heading">
                         </div>
                         <div class="panel-body">
-                        <form role="form" id="form" enctype="multipart/form-data">
+                        <form role="form" id="form" name="catInfo" enctype="multipart/form-data">
                             <span style="display: none;" name="user_id" value="1"></span>    
                             <div class="row">
                                 <div class="col-lg-4">
@@ -127,20 +127,6 @@
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
                                 <div class="col-lg-8">
-                                    <!-- <form role="form">
-                                        <div class="form-group has-success">
-                                            <label class="control-label" for="inputSuccess">Input success</label>
-                                            <input type="text" class="form-control" id="title">
-                                        </div>
-                                        <div class="form-group has-warning">
-                                            <label class="control-label" for="inputWarning">Input Warning</label>
-                                            <textarea row=3 class="form-control" id="inputWarning">
-                                        </div>
-                                        <div class="form-group has-error">
-                                            <label class="control-label" for="inputError">Input with error</label>
-                                            <input type="text" class="form-control" id="inputError">
-                                        </div>
-                                    </form> -->
                                     <div class="form-group">
                                         <label>글 제목</label>
                                         <input type="text" class="form-control" name="title" id="title">
@@ -201,7 +187,10 @@
     
     <script>
         $(() => {
-            $("body").on("click", "#addImage", () => {   
+            var catPhoto = 1;
+            $("body").on("click", "#addImage", (ent) => { 
+                ent.preventDefault();
+                if(catPhoto>=4) return alert("사진은 최대 4장까지 업로드 됩니다.");
                 $("#imageClass").find("#addImage").remove();
                 $("#imageClass").append(
                     `<div class="form-group">
@@ -210,47 +199,34 @@
                             <button id="addImage" >파일 추가</button>
                         </span>
                     </div>`);
+                catPhoto += 1;
             });
 
             $("body").on("change", ".vaccin", (ent) => {
-                alert($(ent.target).val())
                 if($(ent.target).val()==0) $(ent.target).val(1);
                 else $(ent.target).val(0);
             });
 
 
 
-            $("body").on("click", "#registerButton", () => {
+            $("body").on("click", "#registerButton", (ent) => {
+                ent.preventDefault();
                 if(confirm("등록하시겠습니까?")){
+                    var isPhotoEmpty = 0;
+                    $($('.images').each(element => {
+                        if(document.getElementsByClassName('images')[element].value=="") isPhotoEmpty += 1;
+                    }));
+                    if(isPhotoEmpty == document.getElementsByClassName('images').length) return alert("사진은 반드시 1장 이상 올려주세요.");
+                    
                     if(parseInt($("#fee").val())==="NaN") return alert("분양가격은 숫자만 입력하세요.");
                     
-                    // var formData = new FormData();
-                    // $(".images").each((index, file) => {
-                    //     formData.append('catImage'+index, file);
-                    // });
-                    // formData.append('lineage', $('#lineage'));
-                    // formData.append('spec', {
-                    //     user_id: 1,
-                    //     age:  $('#age').val(),
-                    //     spiece: $('#spiece').val(),
-                    //     fee: $('#fee').val(),
-                    //     gender: $('#gender:checked').val(),
-                    //     neutralization: $('#neutralization:checked').val(),
-                    //     combi1: $('#combi1').val(),
-                    //     combi2: $('#combi2').val(),
-                    //     combi3: $('#combi3').val(),
-                    //     rabies: $('#rabies').val(),
-                    //     title: $('#title').val(),
-                    //     introduction: $('#introduction').val(),
-                    //     condition:$('#condition').val()
-                    // });
-
+                    var formData = new FormData(document.forms.namedItem("catInfo"));
                     $.ajax({ 
                         url: '/post',
                         processData: false,
                         type: 'POST',
-                        dataType: 'json',
-                        data: $("#form").serialize(),
+                        contentType: false,
+                        data: formData,
                         success: function(newPostId){
                             alert("등록완료 되었습니다.");
                             location.href = '/post/'+newPostId;

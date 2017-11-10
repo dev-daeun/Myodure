@@ -42,7 +42,7 @@
                     <div class="col-lg-6">
                         <img class="img-fluid rounded"  src="<%=images[i]%>" alt="unloaded" style="margin-bottom: 10px;">
                     </div>
-                  <% } %>  
+                <% } %>  
           </div>
           <hr>
              <!-- Date/Time -->
@@ -72,11 +72,11 @@
               <div class="col-lg-2">
                   <h5>예방 접종</h5>
               </div>
-              <div class="col-lg-10">
-                  <span class="lead vaccin" value="<%=post.combi1%>" style="margin-right:10px;">종합1차</span>
-                  <span class="lead vaccin" value="<%=post.combi2%>" style="margin-right:10px;">종합2차</span>
-                  <span class="lead vaccin" value="<%=post.combi3%>" style="margin-right:10px;">종합3차</span>
-                  <span class="lead vaccin" value="<%=post.rabies%>">광견병</span>
+              <div class="col-lg-10" id="vaccin-form">
+                  <span class="lead vaccin" id="combi1" style="margin-right:10px;"><%=post.combi1%></span>
+                  <span class="lead vaccin" id="combi2" style="margin-right:10px;"><%=post.combi2%></span>
+                  <span class="lead vaccin" id="combi3" style="margin-right:10px;"><%=post.combi3%></span>
+                  <span class="lead vaccin" id="rabies"><%=post.rabies%></span>
               </div>
             </div>
             <hr>
@@ -115,8 +115,7 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/popper/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script>
       $(() => {
@@ -127,14 +126,21 @@
             case 4: $("#age").text("3년 이상");
           }
           switch(parseInt($("#neutralization").text())){
-            case 0: $("#neutralization").text("중성화 O"); break;
-            case 1: $("#neutralization").text("중성화 X");
+            case 0: $("#neutralization").text("중성화 X"); break;
+            case 1: $("#neutralization").text("중성화 O");
           }
           $("#fee").text("희망분양비 : "+String($("#fee").text()).replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')+"원");
           $(".vaccin").each((index, element) => {
-            alert(this.val());
-              if($(this).val()==1) $(this).css("font-color", "black");
-              else $(this).css("font-color", "gray");
+            if($(element).text()==1) $(element).css("font-weight", "600");
+            else $(element).css("font-color", "gray");
+            
+            switch($(element).attr('id')){
+              case "combi1": $(element).text("종합1차"); break;
+              case "combi2": $(element).text("종합2차"); break;
+              case "combi3": $(element).text("종합3차"); break;
+              case "rabies": $(element).text("광견병");
+
+            }
           })
         });
       
