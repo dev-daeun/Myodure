@@ -38,7 +38,7 @@
 </head>
 
 <body>
-    <% include ./navigation.ejs %>
+    <div id="navigation"></div>
     <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
             <div class="row">
                     <div class="col-lg-2"></div>
@@ -160,7 +160,10 @@
     
     <script>
         $(() => {
-
+            $('/navBeforeLogin', (data) => {
+                $("#navigation").replaceWith(data);
+            });
+            
             var emailEtc = false;
             $("body").on("change", "#emailServer", (ent) => {
                 if($(ent.target).val()==="etc"){

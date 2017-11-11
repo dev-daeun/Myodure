@@ -17,7 +17,7 @@ router.get('/', async function(req ,res ,next){
                     else element.isFavor = 1;
                     delete element.favor_id;
                 })
-            ejs.renderFile('views/list.ejs', {posts: posts} ,(err, view) => {
+            ejs.renderFile('views/list.html', {posts: posts} ,(err, view) => {
                 if(err) next(err);
                 else res.status(200).send(view);
             });
@@ -30,7 +30,7 @@ router.get('/', async function(req ,res ,next){
 router.use(require('./auth').isAuthenticated);
 
 router.get('/registration', async function(req, res, next){
-    ejs.renderFile('views/register.ejs', (err, view)=>{
+    ejs.renderFile('views/register.html', (err, view)=>{
         if(err) next(err);
         else res.status(200).send(view);
     });
@@ -40,7 +40,7 @@ router.get('/:id', async function(req, res, next){
     try{
         let post = await PostDAO.selectById(req.params.id);
         if(post.length==0){
-            ejs.renderFile('views/404.ejs', (err, view) => {
+            ejs.renderFile('views/404.html', (err, view) => {
                 if(err) next(err);
                 else res.status(404).send(view);
             });
@@ -50,7 +50,7 @@ router.get('/:id', async function(req, res, next){
             for(let element of post) images.push(element.image);
             console.log(images);
             post[0].created_at = moment(post[0].created_at).format('YYYY.MM.DD');
-            ejs.renderFile('views/post.ejs', {post: post[0], images: images}, (err, view) => {
+            ejs.renderFile('views/post.html', {post: post[0], images: images}, (err, view) => {
                 if(err) next(err);
                 else res.status(200).send(view);
             });

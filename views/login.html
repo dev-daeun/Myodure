@@ -37,7 +37,7 @@
     <body>
         <!-- Where all the magic happens -->
         <!-- LOGIN FORM -->
-                <%include ./navBeforeLogin.ejs%>
+                <div id="navigation"></div>
                 <div class="text-center" style="padding:50px 0">
                     <div class="logo">로그인</div>
                         <!-- Main Form -->
@@ -75,10 +75,11 @@
         <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script>
-        function login(){
+        function login(ent){
             let email = $('.main-login-form').find('#email').val();
             let password = $('.main-login-form').find('#password').val();
             if(email==''||password=='') {
+                ent.preventDefault();
                  alert("이메일 주소 및 비밀번호를 입력하세요.");
                  return;
             }
@@ -99,18 +100,21 @@
                 }
             });
         }
+
             /*로그인*/
             $(() => {
-              $('.form-control').keypress((ent) => {
-                  ent.preventDefault();
-                  let keycode = (event.keyCode ? event.keyCode : event.which);
-                  if(keycode == '13') login();
-              });
+                $.get('/navBeforeLogin', (data) => {
+                    $('#navigation').replaceWith(data); 
+                });
+                
+                $('.form-control').keypress((ent) => {
+                    let keycode = (event.keyCode ? event.keyCode : event.which);
+                    if(keycode == '13') login(ent);
+                });
 
-              $('body').on('click', '#login-submit', (ent) => {
-                  ent.preventDefault();
-                  login();
-              });
+                $('body').on('click', '#login-submit', (ent) => {
+                    login(ent);
+                });
             });
         </script>
 </html>

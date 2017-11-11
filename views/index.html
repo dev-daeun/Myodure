@@ -20,10 +20,7 @@
 
   <body>
 
-    <!-- Navigation -->
-    <% include ./navigation.ejs %>
-
-
+    <div id="navigation"></div>
     <header>
       <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -99,21 +96,7 @@
 
       <!-- Portfolio Section -->
       <h3 class='my-4'>새 가족을 찾는 냥이들</h3>
-      <div class="row">
-        <% for(let i = 0; i<6; i++) { %>
-          <div class="col-lg-4 col-sm-6 portfolio-item">
-            <div class="card h-100">
-              <a href="/post/<%=urgent[i].id%>"><img class="card-img-top" src="<%=urgent[i].thumbnail%>" alt="unloaded"></a>
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="/post/<%=urgent[i].id%>"><%=urgent[i].title%></a>
-                </h4>
-                <p class="card-text"><%=urgent[i].introduction%></p>
-              </div>
-            </div>
-          </div>
-        <% } %>
-        </div>
+      <div class="row" id="urgent-board"></div>
       <!-- /.row -->
 
 
@@ -143,7 +126,52 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script>
+      $(() => {
+          if(getCookie("GoodCat")==="") {
+              $.get('/navBeforeLogin', (data) => {
+                $("#navigation").replaceWith(data);
+              });
+          } 
+          else{
+            $.get('/nav', (data) => {
+              $("#navigation").replaceWith(data);
+            });
+          } 
+          $.ajax({
+            processData: true,
+            url: '/urgent',
+            method: 'GET',
+            dataType: 'json',
+            success: function(list){
+              list.forEach(urgent => {
+                $("#urgent-board").append(`
+                  <div class="col-lg-4 col-sm-6 portfolio-item">
+                    <div class="card h-100">
+                      <a href="/post/`+urgent.id+`"><img class="card-img-top" src="`+urgent.thumbnail+`" alt="unloaded"></a>
+                      <div class="card-body">
+                        <h4 class="card-title">
+                          <a href="/post/`+urgent.id+`">`+urgent.title+`</a>
+                        </h4>
+                        <p class="card-text">`+urgent.introduction+`</p>
+                      </div>
+                    </div>
+                  </div>
+                `);
+              });              
+            },
+            error: function(xhr, status, err){
+              alert(xhr.responseText);
+            }
+          });
+      });
 
+    </script>
+    <script>
+
+    </script>
   </body>
 
 </html>

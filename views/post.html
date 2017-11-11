@@ -16,12 +16,14 @@
     <!-- Custom styles for this template -->
     <link href="../css/modern-business.css" rel="stylesheet">
 
+    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body>
 
     <!-- Navigation -->
-    <% include ./navigation.ejs %>
+    <div id="navigation"></div> 
+    
 
     <!-- Page Content -->
     <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
@@ -100,7 +102,7 @@
         </div>  <!--col-->
       </div> <!--row-->
       <div style="float: right;">
-          <button id="chatButton" style="text-align: right;" class="btn btn-danger">분양희망자와 대화하기</button>
+          <button id="chat-button" style="text-align: right;" class="btn btn-danger">분양희망자와 대화하기</button>
       </div>
     </div><!--container-->  
 
@@ -118,7 +120,15 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script>
+        w3.includeHTML();
+        </script>
+        
+    <script>
+      var socket;
       $(() => {
+          $.get('/nav', (data) => {
+            $("#navigation").replaceWith(data);
+          })
           switch(parseInt($("#age").text())){
             case 1: $("#age").text("2개월 이상 - 6개월 미만"); break;
             case 2: $("#age").text("6개월 이상 - 1년 미만"); break;
@@ -144,6 +154,22 @@
           })
         });
       
+        $("body").on("click", "#chat-button", () => {
+          $("body").load("chat-body.html", function(){
+            alert("new dom loaded")
+          })
+            socket = io.connect();
+            socket.emit("startChat");
+
+
+            socket.on("error", err => {
+                alert(err);
+            });
+
+            socket.on("showWindow", view => {
+              $().load(view);
+            });
+        });
 
       
 

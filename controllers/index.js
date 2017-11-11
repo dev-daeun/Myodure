@@ -18,8 +18,7 @@ const Jwt = require('../libs/jwt');
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   try{
-      let urgentList = await PostDAO.selectUrgent();
-      ejs.renderFile('views/index.ejs', {urgent: urgentList}, (err, view) => {
+      ejs.renderFile('views/index.html', (err, view) => {
           if(err) next(err);
           else res.status(200).send(view);
       });
@@ -28,10 +27,41 @@ router.get('/', async function(req, res, next) {
   }
 });
 
+router.get('/nav', async function(req, res, next) {
+  try{
+      ejs.renderFile('views/navigation.html', (err, view) => {
+          if(err) next(err);
+          else res.status(200).send(view);
+      });
+  }catch(err){
+      next(err);
+  }
+});
+
+router.get('/navBeforeLogin', async function(req, res, next) {
+  try{
+      ejs.renderFile('views/navBeforeLogin.html', (err, view) => {
+          if(err) next(err);
+          else res.status(200).send(view);
+      });
+  }catch(err){
+      next(err);
+  }
+});
+
+router.get('/urgent', async function(req, res, next) {
+  try{
+      let urgentList = await PostDAO.selectUrgent();
+      res.status(200).send((JSON.parse(JSON.stringify(urgentList))));
+      
+  }catch(err){
+      next(err);
+  }
+});
 
 router.get('/signup', async function(req, res, next){
   try{
-    ejs.renderFile('views/signup.ejs', (err, view) => {
+    ejs.renderFile('views/signup.html', (err, view) => {
         if(err) next(err);
         else res.status(200).send(view);
     });
@@ -85,7 +115,7 @@ router.post('/login', async function(req, res, next){
 
 router.get('/login', async function(req, res, next){
   try{
-    ejs.renderFile('views/login.ejs', (err, view) => {
+    ejs.renderFile('views/login.html', (err, view) => {
         if(err) next(err);
         else res.status(200).send(view);
     });

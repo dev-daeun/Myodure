@@ -51,7 +51,7 @@ app.use('/chat', require('./controllers/chat'));
 // error handler
 app.use(function(err, req, res, next) {
   if(err.status=="404"){
-      ejs.renderFile('views/404.ejs', (err, view) => {
+      ejs.renderFile('views/404.html', (err, view) => {
         if(err) return res.status(err.status || 500).send(err.message);
         return res.status(404).send(view);
       });

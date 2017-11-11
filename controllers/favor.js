@@ -16,7 +16,7 @@ router.get('/', async function(req, res, next){
             element.created_at = moment(element.created_at).format('YYYY.MM.DD');
             element.isFavor = 1;
         });
-        ejs.renderFile('views/list.ejs', {posts: result} ,(err, view) => {
+        ejs.renderFile('views/list.html', {posts: result} ,(err, view) => {
             if(err) next(err);
             else res.status(200).send(view);
         });
