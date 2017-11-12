@@ -63,6 +63,16 @@
          
           socket = io.connect();
           socket.emit("enterRoom", $("#room").val()); 
+          window.history.pushState('forward', null, window.location.pathname);
+          
+          /*백버튼 클릭하면*/
+          if (window.history && window.history.pushState) {
+              $(window).on('popstate', function() {
+                  socket.emit("disconnect");
+                  socket = null;
+                  window.history.back();
+              });
+          } 
 
           /* 메세지 전송 이벤트 */
           $("body").on("keypress", '.form-control', (ent) => {
@@ -73,7 +83,13 @@
           $('body').on('click', '#send-button', (ent) => {
               sendMessage(ent);
           });
+
+          $('body').on('click', '.nav-item', (ent) => {
+              socket.emit('disconnect');
+              socket = null;
+          });
          
+          
           socket.on("enumMessages", (messages) => {
               let message = JSON.parse(messages);
               $("#chatlist").children().remove();
@@ -112,6 +128,8 @@
           socket.on("unauth", message => {
                 return alert(message);
           });
+
+          
       });
 
     function sendMessage(ent){

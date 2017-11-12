@@ -69,8 +69,6 @@ const io = require('socket.io')(server);
                     else color = "#ffd891"; //본인이면 메세지 창 노란색
                     msg.color = color;
                 });
-                console.log(talkId)
-                console.log(messages)
             client.emit("enumMessages",  JSON.stringify(messages)); 
         });
 
@@ -99,6 +97,7 @@ const io = require('socket.io')(server);
 
         client.on("disconnect", ()=> {
             client.disconnect();
+            io.close();
         })
         
       });
