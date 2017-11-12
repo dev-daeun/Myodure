@@ -56,7 +56,7 @@
                         <div class="panel-heading">
                         </div>
                         <div class="panel-body">
-                        <form role="form" id="form" enctype="multipart/form-data">
+                        <form role="form" id="form">
                             <div class="row">
                                       
                                         <label>이메일 주소</label>
@@ -95,8 +95,8 @@
                                         </div>
                                    
                             </div>
-                            <div class="form-group" style="text-align: center; margin-top: 30px;">
-                                <input type="submit" name="submit" id="edit-button" value="회원정보 수정" class="btn btn-default">
+                            <div class="form-group" style="text-align: center; margin-top: 30px;" value="<%=user.isOwnInfo%>">
+                                <button id="edit-button" class="btn btn-default">회원정보 수정</button>
                             </div>
         
                         </form>    
@@ -131,7 +131,9 @@
                 $("#navigation").replaceWith(data);
             });
             
-
+            if($("#edit-button").parent().attr("value")==false) {
+                $("#edit-button").remove();
+            }
         });
     </script>
 

@@ -31,7 +31,7 @@
       <!-- Page Heading/Breadcrumbs -->
       <h3 class="mt-4 mb-3"><%=post.title%>
             <small>by
-                <p id="writer-name"><%=post.username%></p>
+                <span id="writer-name"><%=post.username%></span>
             </small>
       </h3>
 
@@ -41,10 +41,8 @@
           <!-- Preview Image -->
           <div class="row">
                 <% for(let i = 0; i<images.length; i++) { %>
-                    <div class="col-lg-6">
-                        <img class="img-fluid rounded"  src="<%=images[i]%>" alt="unloaded" style="margin-bottom: 10px;">
-                    </div>
-                <% } %>  
+                        <img class="img-fluid rounded"  src="<%=images[i]%>" alt="unloaded" style="margin-right: 10px;">
+                 <% } %>  
           </div>
           <hr>
              <!-- Date/Time -->
@@ -127,7 +125,7 @@
           $.get('/nav', (data) => {
             $("#navigation").replaceWith(data);
           })
-          if($("#chat-button").val()==true) $("#chat-button").remove();
+          if($("#chat-button").attr("value")==true) $("#chat-button").remove();
 
           switch(parseInt($("#age").text())){
             case 1: $("#age").text("2개월 이상 - 6개월 미만"); break;

@@ -14,13 +14,18 @@ router.use(require('./auth').isAuthenticated);
 
 router.get('/', async function(req, res, next){
     try{
-        var user; 
-        if(req.query.user) user = req.query.user;
-        else user = req.session.passport.user;
-
+        var user, isOwnInfo; 
+        if(req.query.user) {
+            user = req.query.user;
+            isOwnInfo = false;
+        }
+        else {
+            user = req.session.passport.user;
+            isOwnInfo = true;
+        }
         let userInfo = await UserDAO.selectByCol('id', user);
         userInfo[0].phone = encryption.decrypt(userInfo[0].phone);
-
+        userInfo[0].isOwnInfo = isOwnInfo;
         ejs.renderFile('views/user-info.html', {user: userInfo[0]}, (err, view) => {
             if(err) next(err);
             else res.status(200).send(view);

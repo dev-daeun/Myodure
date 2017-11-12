@@ -33,7 +33,8 @@ module.exports = {
                         LEFT OUTER JOIN (SELECT post_id AS favor_id 
                                         FROM   favorites 
                                         WHERE  user_id = ?) AS FAVOR 
-                        ON FAVOR.favor_id = POST.id`, [userId]);
+                        ON FAVOR.favor_id = POST.id
+                order by POST.id desc`, [userId]);
             return results;
         }catch(err){
             throw err;
