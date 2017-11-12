@@ -12,13 +12,13 @@
     <!-- Bootstrap core CSS -->
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="css/modern-business.css" rel="stylesheet">
-    <link href="css/app.css" rel="stylesheet">
-    <script src="js/app.js"></script>
-    <script src="js/routes.js"></script>
-    <script src="js/angular.js"></script>
+    <link href="/css/modern-business.css" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
+    <script src="/js/app.js"></script>
+    <script src="/js/routes.js"></script>
+    <script src="/js/angular.js"></script>
   </head>
 
   <style>
@@ -31,15 +31,13 @@
   <body>
       <div id="navigation"></div>
       <div class="container" style="margin-top:140px" >
-        <div zf-panel position="left" id="sidebar" class="medium-grid-block collapse medium-3 large-3 vertical">
-          <div class="grid-content collapse shrink hide-for-medium">
-            <a href="" class="secondary button expand" zf-close>Close</a>
-          </div>
-        </div>
+
         <div class="grid-block collapse medium-9 large-9 vertical">
           <div class="grid-block">
             <div class="grid-block small-12 medium-9 vertical" id="board">
+              <button id="room" value="<%=talkId%>" style="display: none;"></button>
               <div class="grid-content" id="chatlist">
+  
               </div>
             </div>
           </div>
@@ -64,30 +62,7 @@
           })
          
           socket = io.connect();
-          $.ajax({
-              processData: false,
-              url: '/chat/list',
-              method: 'GET',
-              dataType: 'json',
-              success: function(list){
-                for(let i = 0; i<list.length; i++)
-                    $('#chatlist').append(`
-                        <div class="chat-element">
-                          <button class="room" value="`+list[i].id+`" style="display: none;"></button>
-                          <h4>`+list[i].username+`</h4>
-                          <button class="btn btn-danger" id="alarm" style="display:none;" value="`+list[i].unread+`">`+list[i].unread+`</button>
-                          <p>`+list[i].content+`</p>
-                          <h6>`+list[i].sent_time+`</h6>
-                          <hr />
-                      </div>`)
-              },
-              error: function(xhr, status, err){
-                alert(xhr.responseText);
-              }
-            })
-          $("body").on("click", ".chat-element", (ent) => {
-              socket.emit("enterRoom", parseInt($(ent.target).children(".room").val())); 
-          });
+          socket.emit("enterRoom", $("#room").val()); 
 
           /* 메세지 전송 이벤트 */
           $("body").on("keypress", '.form-control', (ent) => {
@@ -98,17 +73,13 @@
           $('body').on('click', '#send-button', (ent) => {
               sendMessage(ent);
           });
-
-          $('body').on('click', '.nav-item', (ent) => {
-              socket.emit('disconnect');
-              socket = null;
-          });
          
           socket.on("enumMessages", (messages) => {
               let message = JSON.parse(messages);
               $("#chatlist").children().remove();
-              $("#chatlist").append("<p>방에 입장했습니다.</p>");
-              for(let i = 0; i<message.length; i++) { 
+              if(message.length===0) $("#chatlist").append("<p id='welcome'>아직 대화가 없습니다.</p>")
+              else{
+                for(let i = 0; i<message.length; i++) { 
                   $("#chatlist").append(`<div class="msg-element" value="`+message[i].sender_id+`">
                                             <div style="background-color: `+message[i].color+`;">
                                               <h4>`+message[i].username+`</h4>
@@ -117,11 +88,13 @@
                                               <hr />
                                             </div>
                                           </div>`);                    
-              } 
+                }
+              }
               $("#board").append(`<div class="message-input grid-content collapse shrink">
                                     <input type="text" placeholder="Message" class="form-control">
                                     <button id="send-button" class="form-control button">Send</button>
                                   </div>`);
+            
           });  
 
 
@@ -136,11 +109,6 @@
                                     </div>`);  
           });
 
-          socket.on("setAlarm", talkId => {
-            var element = $(`.chat-element[value="`+parseInt(talkId)+`"]`);
-            element.children("button").val(parseInt(element.siblings("button").val())+1);
-            element.children("button").css("display", "")
-          });
           socket.on("unauth", message => {
                 return alert(message);
           });
@@ -148,9 +116,10 @@
 
     function sendMessage(ent){
         if($(".form-control").val()=="") return alert("메시지 내용을 입력하세요.");
+        $("#welcome").remove();
         socket.emit("sendMessage", {
-            content: $(".form-control").val(),
-            talkId: parseInt($("#board").val())
+            content: $(".form-control").val(), 
+            talkId: parseInt($("#room").val())
         });
         $(ent.target).val("")
     }

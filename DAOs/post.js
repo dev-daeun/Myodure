@@ -48,7 +48,7 @@ module.exports = {
                 `
                 SELECT * 
                 FROM   (SELECT posts.*, 
-                               users.username 
+                               users.username
                         FROM   posts 
                                JOIN users 
                                  ON users.id = posts.user_id 

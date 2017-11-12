@@ -31,6 +31,7 @@
     "redis": "^2.8.0",
     "regex-email": "^1.0.2",
     "serve-favicon": "~2.4.2",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "socket.io-cookie-parser": "^1.0.0"
   }
 }

@@ -103,7 +103,7 @@
 
             /*로그인*/
             $(() => {
-                $.get('/navBeforeLogin', (data) => {
+                $.get('/nav', (data) => {
                     $('#navigation').replaceWith(data); 
                 });
                 

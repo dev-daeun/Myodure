@@ -16,38 +16,8 @@ const Jwt = require('../libs/jwt');
 
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
-  try{
-      ejs.renderFile('views/index.html', (err, view) => {
-          if(err) next(err);
-          else res.status(200).send(view);
-      });
-  }catch(err){
-      next(err);
-  }
-});
 
-router.get('/nav', async function(req, res, next) {
-  try{
-      ejs.renderFile('views/navigation.html', (err, view) => {
-          if(err) next(err);
-          else res.status(200).send(view);
-      });
-  }catch(err){
-      next(err);
-  }
-});
 
-router.get('/navBeforeLogin', async function(req, res, next) {
-  try{
-      ejs.renderFile('views/navBeforeLogin.html', (err, view) => {
-          if(err) next(err);
-          else res.status(200).send(view);
-      });
-  }catch(err){
-      next(err);
-  }
-});
 
 router.get('/urgent', async function(req, res, next) {
   try{
@@ -59,69 +29,15 @@ router.get('/urgent', async function(req, res, next) {
   }
 });
 
-router.get('/signup', async function(req, res, next){
+
+router.get('/', async function(req, res, next) {
   try{
-    ejs.renderFile('views/signup.html', (err, view) => {
-        if(err) next(err);
-        else res.status(200).send(view);
-    });
-  }
-  catch(err){
-    return next(new LocalError(500, err.message || err));
-  }
-});
-
-/* 회원가입 */
-router.post('/signup', async function(req, res, next){
-  try{
-      let emailDup = await UserService.checkDup("email", req.body.user.email);
-      if(emailDup) next(new LocalError(400,  "이미 사용중인 이메일 주소입니다."));
-      let phoneDup = await UserService.checkDup("phone", Encryption.encrypt(req.body.user.phone));
-      if(phoneDup) next(new LocalError(400,  "이미 사용중인 핸드폰 번호입니다."));
-      let usernameDup = await UserService.checkDup("username", req.body.user.username);
-      if(usernameDup) next(new LocalError(400,  "이미 사용중인 사용자 이름입니다."));
-     
-      let getValue = await Redis.getValue(req.body.user.phone);
-      console.log(getValue);
-      if(getValue!=="authorized") return next(new LocalError(401, "전화번호가 인증되지 않았습니다."));
-      let newUser = await UserService.signup(req.body.user);
-      res.status(201).send(true);
-    
-  }catch(err){
-    next(err);
-  }   
-});
-
-
-
-router.post('/login', async function(req, res, next){
-  try{
-    passport.authenticate('local', { 
-      failureFlash: true 
-    },(err, user, info) => {
-      if(err) return next(new LocalError(500, err.message || err));
-      if(!user) return next(new LocalError(401, info));
-      req.logIn(user, async err => {
-          if(err) return next(new LocalError(500, err.message || err));
-          let newToken = await Jwt.generateToken(String(user));
-          res.status(200).cookie('GoodCat', newToken).send(true);
+      ejs.renderFile('views/index.html', (err, view) => {
+          if(err) next(err);
+          else res.status(200).send(view);
       });
-    })(req, res, next);
   }catch(err){
-    next(err);
-  }
-});
-
-
-router.get('/login', async function(req, res, next){
-  try{
-    ejs.renderFile('views/login.html', (err, view) => {
-        if(err) next(err);
-        else res.status(200).send(view);
-    });
-  }
-  catch(err){
-    return next(new LocalError(500, err.message || err));
+      next(err);
   }
 });
 

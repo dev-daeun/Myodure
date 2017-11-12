@@ -47,7 +47,9 @@ app.use('/post', require('./controllers/post'));
 app.use('/favor', require('./controllers/favor'));
 app.use('/phone', require('./controllers/phone'));
 app.use('/chat', require('./controllers/chat'));
-
+app.use('/nav', require('./controllers/nav'));
+app.use('/login', require('./controllers/login'));
+app.use('/signup', require('./controllers/signup'));
 // error handler
 app.use(function(err, req, res, next) {
   if(err.status=="404"){

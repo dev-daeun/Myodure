@@ -24,32 +24,83 @@ const server = http.createServer(app);
 /* 실시간 메세징 */
 const Chat = require('../DAOs/chat');
 const Msg = require('../DAOs/message');
-const session = require('../libs/redis').getRedisSession();
 const Jwt = require('../libs/jwt');
 const ChatService = require('../services/chat');
+const redisCfg = require('../config.json').redis;
 
-const connect = require('connect');
+const cookieParser = require('socket.io-cookie-parser');
+const session = require('express-session');
 const moment = require('moment');
-const io = require('socket.io')(server); 
-      io.on("connection", async client => {
+const ejs = require('ejs');
 
-   
-        client.on("enterRoom", async roomId => {
-            let messages = await Msg.selectAll(3, 1);
+const sessionMiddleware = session({
+        store: require('../libs/redis').getRedisSession(), // XXX redis server config
+        secret: redisCfg.secret,
+        saveUninitialized: false,
+        resave: false
+});
+
+const io = require('socket.io')(server); 
+
+      io.use(cookieParser());
+      io.use(function(client, next) {
+            sessionMiddleware(client.request, client.request.res, next);
+      });
+      
+
+      io.on("connection", async client => {
+        var user;
+        var sid = client.request.session.passport.user;
+        var cookie = client.request.cookies.GoodCat;
+
+        if (sid) {
+            let decoded = await Jwt.verifyToken(cookie);
+            if(parseInt(decoded.data)===sid) user = sid;
+            else socket.emit('unauth', "잘못된 쿠키로 접근했습니다."); 
+        }
+        else socket.emit('unauth', '세션이 만료되었습니다.');
+
+        client.on("enterRoom", async talkId => {
+            let messages = await Msg.selectAll(talkId, user);
                 messages.forEach(msg => {
                     msg.sent_time = moment(msg.sent_time).format("YY.MM.DD HH:MM:SS");
+                    let color;
+                    if(msg.sender_id != user) color="#ffffff";
+                    else color = "#ffd891"; //본인이면 메세지 창 노란색
+                    msg.color = color;
                 });
+                console.log(talkId)
+                console.log(messages)
             client.emit("enumMessages",  JSON.stringify(messages)); 
         });
 
-        client.on("sendMessage", async (packet) => {
+        client.on("sendMessage", async packet => {
             let sentTime = new Date();
-            let senderName = await ChatService.sendMessage(packet.senderId, packet.talkId, packet.content, sentTime);
+            let sender = await ChatService.sendMessage(user, packet.talkId, packet.content, sentTime);
             packet.sentTime =  moment(sentTime).format("YY.MM.DD HH:MM:SS");
-            packet.senderName = senderName;
+            packet.senderName = sender.username;
+            let color;
+            if(sender.senderId!=user) color="#ffffff";
+            else color = "#ffd891"; //본인이면 메세지 창 노란색
+            packet.color = color;
             client.emit("appendMessage", packet);
+            client.emit("setAlarm", packet.talkId);
         });
 
+        client.on("startChat", userId => {
+            ejs.renderFile('views/chat-index.html', (err, view) => {
+                if(err) {
+                    console.log(err);
+                    client.emit("error", err);
+                }
+                else client.emit("showWindow", view);
+            });
+        });
+
+        client.on("disconnect", ()=> {
+            client.disconnect();
+        })
+        
       });
 
 

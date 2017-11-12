@@ -130,16 +130,11 @@
     <script src="js/custom.js"></script>
     <script>
       $(() => {
-          if(getCookie("GoodCat")==="") {
-              $.get('/navBeforeLogin', (data) => {
-                $("#navigation").replaceWith(data);
-              });
-          } 
-          else{
-            $.get('/nav', (data) => {
+    
+          $.get('/nav', (data) => {
               $("#navigation").replaceWith(data);
-            });
-          } 
+          });
+        
           $.ajax({
             processData: true,
             url: '/urgent',

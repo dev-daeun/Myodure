@@ -47,6 +47,15 @@ module.exports = {
             await conn.releaseConnection();
         }
     },
+    selectByUsersId: async function(conn, salerId, adopterId){
+        try{
+            let results = await conn.query('select * from talks where saler_id = ? and adopter_id = ?', [salerId, adopterId]);
+            return results;
+
+        }catch(err){
+            throw err;
+        }
+    },
     update: async function(conn, senderId, talkId, content, sentTime){
         try{
             await conn.query('update talks set sender_id = ?, content = ?, sent_time = ? where id = ?', [senderId, content, sentTime, talkId]);
@@ -54,6 +63,18 @@ module.exports = {
         }
         catch(err){
             conn.rollback();
+            throw err;
+        }
+    },
+    insert: async function(conn, salerId, adopterId){
+        try{
+            let newTalk = await conn.query('insert into talks set ?', {
+                saler_id: salerId,
+                adopter_id: adopterId,
+                content: '분양희망자와 대화를 시작하세요.'
+            });
+            return newTalk.insertId;
+        }catch(err){
             throw err;
         }
     }

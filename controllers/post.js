@@ -48,8 +48,11 @@ router.get('/:id', async function(req, res, next){
         else{
             let images = new Array();
             for(let element of post) images.push(element.image);
-            console.log(images);
+           
             post[0].created_at = moment(post[0].created_at).format('YYYY.MM.DD');
+            post[0].isOwnPost = (parseInt(post[0].user_id) === parseInt(req.session.passport.user)) ? true : false;
+          
+            console.log(post[0])
             ejs.renderFile('views/post.html', {post: post[0], images: images}, (err, view) => {
                 if(err) next(err);
                 else res.status(200).send(view);

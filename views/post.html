@@ -30,9 +30,9 @@
 
       <!-- Page Heading/Breadcrumbs -->
       <h3 class="mt-4 mb-3"><%=post.title%>
-        <small>by
-          <a href="#"><%=post.username%></a>
-        </small>
+            <small>by
+                <a href="#"><%=post.username%></a>
+            </small>
       </h3>
 
       <div class="row">
@@ -101,8 +101,9 @@
               </div>
         </div>  <!--col-->
       </div> <!--row-->
-      <div style="float: right;">
-          <button id="chat-button" style="text-align: right;" class="btn btn-danger">분양희망자와 대화하기</button>
+      <!-- <div style="float: right;" id="writer" > -->
+          <button id="writer" value="<%=post.user_id%>" style="display: none;"></button>
+          <button id="chat-button" style="text-align: right;" class="btn btn-danger" value="<%=post.isOwnPost%>">분양희망자와 대화하기</button>
       </div>
     </div><!--container-->  
 
@@ -119,16 +120,15 @@
     <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script>
-        w3.includeHTML();
-        </script>
-        
+ 
     <script>
       var socket;
       $(() => {
           $.get('/nav', (data) => {
             $("#navigation").replaceWith(data);
           })
+          if($("#chat-button").val()==true) $("#chat-button").remove();
+
           switch(parseInt($("#age").text())){
             case 1: $("#age").text("2개월 이상 - 6개월 미만"); break;
             case 2: $("#age").text("6개월 이상 - 1년 미만"); break;
@@ -155,20 +155,7 @@
         });
       
         $("body").on("click", "#chat-button", () => {
-          $("body").load("chat-body.html", function(){
-            alert("new dom loaded")
-          })
-            socket = io.connect();
-            socket.emit("startChat");
-
-
-            socket.on("error", err => {
-                alert(err);
-            });
-
-            socket.on("showWindow", view => {
-              $().load(view);
-            });
+            location.href = '/chat/'+$("#writer").val();
         });
 
       
