@@ -99,7 +99,7 @@
               </div>
         </div>  <!--col-->
       </div> <!--row-->
-      <!-- <div style="float: right;" id="writer" > -->
+      <div style="float: right;" id="post-id" value="<%=post.post_id%>">
           <button id="writer" value="<%=post.user_id%>" style="display: none;"></button>
           <button id="chat-button" style="text-align: right;" class="btn btn-danger" value="<%=post.isOwnPost%>">분양희망자와 대화하기</button>
       </div>
@@ -125,7 +125,10 @@
           $.get('/nav', (data) => {
             $("#navigation").replaceWith(data);
           })
-          if($("#chat-button").attr("value")==true) $("#chat-button").remove();
+          if($("#chat-button").attr("value")==="true"){
+              $("#chat-button").remove();
+              $(`<button class="btn btn-danger" id="delete-post">분양글 삭제하기</button>`).insertAfter("#writer");
+          } 
 
           switch(parseInt($("#age").text())){
             case 1: $("#age").text("2개월 이상 - 6개월 미만"); break;
@@ -160,6 +163,22 @@
             location.href='/user?user='+$("#writer").val();
         });
       
+        $("body").on("click", "#delete-post", () => {
+            if(confirm("정말로 삭제하시겠습니까?")){
+                $.ajax({
+                    url: '/post/'+$("#post-id").attr("value"),
+                    method: "delete",
+                    processData: false,
+                    success: function(){
+                        alert("삭제되었습니다.");
+                        location.href = '/post';
+                    },
+                    error: function(xhr, status, err){
+                        alert(xhr.responseText);
+                    }
+                })
+            }
+        });
 
     </script>
   </body>

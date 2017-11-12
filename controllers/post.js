@@ -99,10 +99,18 @@ router.post('/',  upload.fields([{
             let newPostId = await PostService.postNew(specification, imageArray); 
             res.status(201).send(""+newPostId);             
         }catch(err){
-            next(new CustomError(500, err.message || err));
+            next(err);
         }
 });
 
+router.delete('/:id', async function(req, res, next){
+    try{
+        await PostDAO.deleteById(req.params.id);
+        res.status(200).send(true);
+    }catch(err){
+        next(err);
+    }
+});
 
 module.exports = router;
 

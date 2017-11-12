@@ -72,5 +72,16 @@ module.exports = {
         }catch(err){
             throw err;
         }
+    },
+    deleteById: async function(id){
+        try{
+            var conn = await pool.getConnection();
+            await conn.query("delete from posts where id = ?", [id]);
+            return;
+        }catch(err){
+            throw err;
+        }finally{
+            await pool.releaseConnection(conn);
+        }
     }
 };
