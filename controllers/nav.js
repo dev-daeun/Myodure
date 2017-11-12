@@ -3,7 +3,6 @@ const router = express.Router();
 const ejs = require('ejs');
 
 router.get('/', async function(req, res, next) {
-    console.log(req.cookies.GoodCat)
         if(req.cookies.GoodCat){
             ejs.renderFile('views/navigation.html', (err, view) => {
                 if(err) next(err);

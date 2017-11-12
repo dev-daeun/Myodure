@@ -8,6 +8,10 @@ const multer  = require('multer');
 const moment = require('moment');
 const upload = require('../libs/s3').getUpload();
 
+
+router.use(require('./auth').isAuthenticated);
+
+
 router.get('/', async function(req ,res ,next){
     try{
             let posts = await PostDAO.selectAll(req.session.passport.user);
@@ -26,8 +30,6 @@ router.get('/', async function(req ,res ,next){
     }
 
 });
-
-router.use(require('./auth').isAuthenticated);
 
 router.get('/registration', async function(req, res, next){
     ejs.renderFile('views/register.html', (err, view)=>{

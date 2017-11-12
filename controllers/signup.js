@@ -3,7 +3,7 @@ const router = express.Router();
 const ejs = require('ejs');
 
 
-router.get('/signup', async function(req, res, next){
+router.get('/', async function(req, res, next){
     try{
       ejs.renderFile('views/signup.html', (err, view) => {
           if(err) next(err);
@@ -16,7 +16,7 @@ router.get('/signup', async function(req, res, next){
   });
   
   /* 회원가입 */
-  router.post('/signup', async function(req, res, next){
+  router.post('/', async function(req, res, next){
     try{
         let emailDup = await UserService.checkDup("email", req.body.user.email);
         if(emailDup) next(new LocalError(400,  "이미 사용중인 이메일 주소입니다."));

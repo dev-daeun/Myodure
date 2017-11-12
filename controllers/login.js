@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const ejs = require('ejs');
-
-router.get('/login', async function(req, res, next){
+const passport = require('../libs/passport');
+const Jwt = require('../libs/jwt');
+router.get('/', async function(req, res, next){
   try{
     ejs.renderFile('views/login.html', (err, view) => {
         if(err) next(err);
@@ -14,7 +15,7 @@ router.get('/login', async function(req, res, next){
   }
 });
 
-router.post('/login', async function(req, res, next){
+router.post('/', async function(req, res, next){
     try{
       passport.authenticate('local', { 
         failureFlash: true 

@@ -41,10 +41,9 @@ router.get('/', async function(req, res, next) {
   }
 });
 
-router.use(require('./auth').isAuthenticated);
 
 
-router.get('/logout', async function(req, res, next){
+router.get('/logout', require('./auth').isAuthenticated, async function(req, res, next){
   req.session.destroy(err => {
     if(err) next(new CustomError(500, err.message || err));
     req.user = null;
@@ -57,7 +56,7 @@ router.get('/logout', async function(req, res, next){
 
 
 
-router.delete('/signout', async function(req, res, next){
+router.delete('/signout', require('./auth').isAuthenticated, async function(req, res, next){
   try{
     await UserDAO.deleteById(req.id);
     req.session.destroy();
