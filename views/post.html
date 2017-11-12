@@ -31,7 +31,7 @@
       <!-- Page Heading/Breadcrumbs -->
       <h3 class="mt-4 mb-3"><%=post.title%>
             <small>by
-                <a href="#"><%=post.username%></a>
+                <p id="writer-name"><%=post.username%></p>
             </small>
       </h3>
 
@@ -158,6 +158,9 @@
             location.href = '/chat/'+$("#writer").val();
         });
 
+        $("body").on("click", "#writer-name", (ent) => {
+            location.href='/user?user='+$("#writer").val();
+        });
       
 
     </script>

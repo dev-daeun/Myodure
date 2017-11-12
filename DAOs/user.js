@@ -16,7 +16,7 @@ module.exports = {
     selectByCol: async function(col, data){
         try {
             var conn = await pool.getConnection();
-            let result = await conn.query('select * from users where ?? = ?', [col, data]);
+            let result = await conn.query('select username, email, address, phone, gender, family, residence from users where ?? = ?', [col, data]);
             return result;
         } catch(err) {
             throw err;

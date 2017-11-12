@@ -51,6 +51,7 @@ app.use('/chat', require('./controllers/chat'));
 app.use('/nav', require('./controllers/nav'));
 app.use('/login', require('./controllers/login'));
 app.use('/signup', require('./controllers/signup'));
+app.use('/user', require('./controllers/user'));
 // error handler
 app.use(function(err, req, res, next) {
   if(err.status=="404"){
