@@ -26,6 +26,8 @@ router.get('/', async function(req, res, next){
         let userInfo = await UserDAO.selectByCol('id', user);
         userInfo[0].phone = encryption.decrypt(userInfo[0].phone);
         userInfo[0].isOwnInfo = isOwnInfo;
+        delete userInfo[0].password; 
+        
         ejs.renderFile('views/user-info.html', {user: userInfo[0]}, (err, view) => {
             if(err) next(err);
             else res.status(200).send(view);
