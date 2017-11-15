@@ -8,8 +8,7 @@ const smsConfig = require('../config').coolsms;
 
 router.get('/', async function(req, res, next){
     try{
-        // let sentMsg = await coolsms(req.query.phone);
-        const sentMsg = Math.floor(Math.random() * (999999 - 100000) + 1);
+        let sentMsg = await coolsms(req.query.phone);
         console.log(sentMsg);
         await Redis.setValue(req.query.phone, sentMsg, 60*3);
         res.status(200).send(true);
@@ -23,8 +22,6 @@ router.post('/', async function(req, res, next){
         let result = await Redis.getValue(req.body.phone);
         if(result!==req.body.authNum) next(new LocalError(401, "잘못된 인증번호 입니다."));
         else{
-            console.log(req.body.phone);
-            console.log(req.body.authNum);
             await Redis.deleteValue(req.body.phone);
             await Redis.setValue(req.body.phone, "authorized", 60*10);
             res.status(200).send(true);

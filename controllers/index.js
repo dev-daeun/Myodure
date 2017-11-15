@@ -58,10 +58,15 @@ router.get('/logout', require('./auth').isAuthenticated, async function(req, res
 
 router.delete('/signout', require('./auth').isAuthenticated, async function(req, res, next){
   try{
-    await UserDAO.deleteById(req.id);
-    req.session.destroy();
-    req.id = null;
-    res.status(200).send(true);
+    await UserDAO.deleteById(req.session.passport.user);
+    req.session.destroy(err => {
+      if(err) next(new CustomError(500, err.message || err));
+      req.user = null;
+      res.clearCookie('GoodCat')
+         .clearCookie('connect.sid')
+         .status(200)
+         .send(true);
+    });
   }catch(err){
     next(err);
   }
